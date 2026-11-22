@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bio Lernapp">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#14353a">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="robots" content="noindex,nofollow">
+<title>Biologie Lernapp</title>
+<style>
+/* Warmes Petrol/Grün – Biologie-Look. Hell + Dunkel */
+:root{
+  --bg:#eef3ee;--bg2:#e3ece6;--card:#fbfcf8;--ink:#17302f;--mute:#5e7470;--line:#d3e0d8;
+  --acc:#1e7c74;--acc2:#2f9a6a;--acc-soft:#dcefe9;--on-acc:#fff;
+  --ok:#2f8f4e;--ok-soft:#e1f2e5;--bad:#c2553d;--bad-soft:#f8e5df;--warm:#d98e3a;--warm-soft:#f8ead7;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0f2a2d;--bg2:#12343a;--card:#173d42;--ink:#e8f3ee;--mute:#9fbcb5;--line:#28545a;
+  --acc:#5cc8b4;--acc2:#7ed39a;--acc-soft:#1d4f52;--on-acc:#0d2628;
+  --ok:#7fd69a;--ok-soft:#1d4a37;--bad:#ff9a80;--bad-soft:#4a2b28;--warm:#f0b062;--warm-soft:#4a3a24;}}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;min-height:100vh;color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;
+  background:radial-gradient(1200px 500px at 10% -10%,var(--bg2),transparent 70%),var(--bg);background-attachment:fixed}
+.wrap{max-width:820px;margin:0 auto;padding:max(24px,env(safe-area-inset-top)) 16px 80px}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:18px;margin:30px 0 12px}
+.sub{color:var(--mute);margin:0 0 20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(20,60,55,.05)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.mode{cursor:pointer;text-align:left;font:inherit;color:inherit;transition:border-color .15s,transform .1s}
+.mode:hover{border-color:var(--acc)}
+.mode:active{transform:scale(.99)}
+.mode b{display:block;font-size:17px;margin-bottom:4px}
+.mode span{color:var(--mute);font-size:14px}
+.mode.hero{background:linear-gradient(135deg,var(--acc),var(--acc2));border:0;color:var(--on-acc)}
+.mode.hero span{color:var(--on-acc);opacity:.85}
+.mode[disabled]{opacity:.5;cursor:default}
+.chap{margin-bottom:10px;padding:16px}
+.chap .head{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.chap .t{font-weight:650;font-size:15px}
+.chap .n{color:var(--mute);font-size:13px;white-space:nowrap}
+.bar{height:7px;background:var(--line);border-radius:4px;overflow:hidden;margin:10px 0 6px;display:flex}
+.bar i{display:block;height:100%}
+.bar .g{background:var(--ok)}.bar .r{background:var(--bad);opacity:.75}
+.legend{font-size:12px;color:var(--mute);display:flex;gap:12px;flex-wrap:wrap}
+.legend .due{color:var(--warm);font-weight:600}
+.cbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.cbtns button{flex:1 1 auto}
+button.btn{font:inherit;font-weight:650;border:0;border-radius:11px;padding:10px 18px;cursor:pointer;background:var(--acc);color:var(--on-acc)}
+button.btn:disabled{opacity:.4;cursor:default}
+button.ghost{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:11px;padding:9px 14px;cursor:pointer}
+button.ghost:hover:not(:disabled){border-color:var(--acc)}
+button.ghost:disabled{opacity:.45;cursor:default}
+button.ghost.red{color:var(--bad)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.pill{font-size:13px;color:var(--mute)}
+.q{font-size:19px;font-weight:650;margin:0 0 6px}
+.meta{font-size:13px;color:var(--mute);margin-bottom:16px}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-right:6px;vertical-align:1px}
+.badge.new{background:var(--acc-soft);color:var(--acc)}
+.badge.rep{background:var(--warm-soft);color:var(--warm)}
+.badge.again{background:var(--bad-soft);color:var(--bad)}
+.opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;font:inherit;color:inherit;background:var(--card);
+  border:2px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;cursor:pointer}
+.opt:hover{border-color:var(--acc)}
+.opt .k{flex:none;width:26px;height:26px;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--mute)}
+.opt.sel{border-color:var(--acc);background:var(--acc-soft)}
+.opt.sel .k{background:var(--acc);border-color:var(--acc);color:var(--on-acc)}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
+.opt.ok .k{background:var(--ok);border-color:var(--ok);color:var(--on-acc)}
+.opt.bad{border-color:var(--bad);background:var(--bad-soft)}
+.opt.bad .k{background:var(--bad);border-color:var(--bad);color:var(--on-acc)}
+.opt.miss{border-color:var(--ok);border-style:dashed}
+.opt .tag{margin-left:auto;font-size:12px;font-weight:700;white-space:nowrap;padding-left:8px}
+.opt.locked{cursor:default}
+.verdict{font-weight:700;margin:6px 0 4px}
+.verdict.ok{color:var(--ok)}.verdict.bad{color:var(--bad)}
+.next-info{font-size:13px;color:var(--mute);margin-bottom:6px}
+.actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px}
+.hint{font-size:12px;color:var(--mute)}
+.big{font-size:44px;font-weight:800;margin:4px 0}
+.row{padding:12px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row summary{cursor:pointer;list-style:none;display:flex;gap:12px;align-items:baseline}
+.row summary::-webkit-details-marker{display:none}
+.row .cnt{flex:none;min-width:62px;font-weight:700;color:var(--bad)}
+.row ul{margin:8px 0 0 74px;padding:0}
+.row li{margin:3px 0;list-style:none}
+.row li.c{color:var(--ok);font-weight:600}
+.row li.c::before{content:"✓ "}.row li:not(.c)::before{content:"✗ ";color:var(--mute)}
+select{font:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);max-width:100%}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.stats3 .card{padding:14px}
+.stats3 b{display:block;font-size:24px}
+.stats3 span{font-size:13px;color:var(--mute)}
+.syncbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px}
+.warnbox{background:var(--bad-soft);color:var(--bad);padding:10px 14px;border-radius:10px;margin-bottom:14px;font-size:14px}
+.infobox{background:var(--acc-soft);padding:12px 14px;border-radius:12px;font-size:14px;margin:12px 0}
+.progline{height:4px;background:var(--line);border-radius:2px;margin:-4px 0 14px;overflow:hidden}
+.progline i{display:block;height:100%;background:var(--acc)}
+.deckbar{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 18px;padding:4px;background:var(--card);border:1px solid var(--line);border-radius:12px;width:fit-content;max-width:100%}
+.deckbar .deck{font:inherit;font-size:14px;font-weight:600;border:0;border-radius:9px;padding:8px 14px;cursor:pointer;background:transparent;color:var(--mute)}
+.deckbar .deck.on{background:var(--acc);color:var(--on-acc)}
+.badge.ai{background:var(--acc-soft);color:var(--acc);border:1px dashed var(--acc)}
+.badge.card{background:var(--warm-soft);color:var(--warm)}
+.cardans{background:var(--acc-soft);border-left:4px solid var(--acc);border-radius:10px;padding:14px 16px;font-size:17px;font-weight:600;margin:6px 0 10px;white-space:pre-wrap}
+.solution{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:12px 0 4px;font-size:15px}
+.solution p{margin:6px 0}
+.sol-h{font-weight:700;margin-bottom:4px}
+.sol-right{color:var(--ok);font-weight:600}
+.sol-note{color:var(--warm);font-size:14px}
+.solbtn{margin-top:10px}
+.solwrap{margin:8px 0 0 74px}
+.solwrap summary{cursor:pointer;color:var(--acc);font-size:14px;font-weight:600}
+@media (max-width:520px){.solwrap{margin-left:0}}
+@media (max-width:520px){.stats3{grid-template-columns:1fr}.row ul{margin-left:0}.cbtns button{flex:1 1 100%}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">Lade…</div>
+<script>
+window.LERNAPP_WEB = 1;
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+window.LERNAPP_READY = (async () => {
+  const app = document.getElementById('app');
+  const u8 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const b64 = b => btoa(String.fromCharCode(...new Uint8Array(b)));
+  let enc;
+  try { enc = await (await fetch('data.enc.json', { cache: 'no-cache' })).json(); }
+  catch (e) { app.innerHTML = '<div class="card">Keine Verbindung – bitte einmal mit Internet öffnen.</div>'; throw e; }
+  const open = async raw => {
+    const k = await crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['decrypt']);
+    const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: u8(enc.iv) }, k, u8(enc.ct));
+    const d = JSON.parse(new TextDecoder().decode(pt));
+    window.LERNAPP_DATA = d.files; window.LERNAPP_SYNC = d.sync;
+  };
+  const saved = localStorage.getItem('lernapp_key');
+  if (saved) { try { await open(u8(saved)); return; } catch (_) { localStorage.removeItem('lernapp_key'); } }
+  await new Promise(done => {
+    app.innerHTML = '<div class="card" style="max-width:420px;margin:12vh auto 0"><h1 style="margin-top:0">🔒 Lernapp</h1>' +
+      '<p class="sub">Bitte einmalig das Passwort eingeben.</p><form id="pwf"><input id="pw" type="password" autocomplete="current-password" ' +
+      'style="width:100%;box-sizing:border-box;font:inherit;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)">' +
+      '<p id="pwe" class="hint" style="color:var(--bad);min-height:1em"></p><button class="btn" style="width:100%">Öffnen</button></form></div>';
+    document.getElementById('pw').focus();
+    document.getElementById('pwf').onsubmit = async e => {
+      e.preventDefault();
+      const err = document.getElementById('pwe'); err.textContent = 'Prüfe …';
+      try {
+        const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(document.getElementById('pw').value), 'PBKDF2', false, ['deriveBits']);
+        const raw = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: u8(enc.salt), iterations: enc.iter }, base, 256);
+        await open(raw);
+        localStorage.setItem('lernapp_key', b64(raw));
+        app.innerHTML = 'Lade…'; done();
+      } catch (_) { err.textContent = 'Falsches Passwort.'; }
+    };
+  });
+})();
+</script>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const LETTERS = 'ABCDEF';
+const EXAM_MAX = 80;
+const examN = () => Math.min(EXAM_MAX, DB.questions.length);
+
+/* ---------- Lernsystem (Spaced Repetition) ----------
+   Stufe 0 = neu/falsch, danach Abstände in Tagen. Muss mit server.py übereinstimmen. */
+const INTERVALS = [0, 1, 3, 7, 14, 30, 60, 120];
+const DAY = 86400000, SLACK = 4 * 3600000;
+const ROUND = 10;        // Fragen pro Runde
+const MAX_DUE = 7;       // höchstens so viele Wiederholungen pro Runde -> mind. 3 neue, solange es neue gibt
+
+let DECKS = [], DECK = null, DB, CH = {}, BYID = {}, P = { stats: {}, history: [] }, serverOK = true, PHONE_URLS = [];
+let S = null; // aktuelle Session
+// WEB = veröffentlichte Version (GitHub Pages): Fragen kommen entschlüsselt aus data.enc.json, Fortschritt liegt im Browser
+const WEB = !!window.LERNAPP_WEB;
+let SYNC = null, SYNC_ON = false;
+async function getJSON(p) {
+  if (WEB) return JSON.parse(JSON.stringify(window.LERNAPP_DATA[p]));
+  return (await fetch(p, { cache: 'no-store' })).json();
+}
+
+function levelOf(s) { return s.level ?? (s.streak > 0 ? Math.min(s.streak + 1, 7) : 0); }
+function dueOf(s) { return s.due ?? (s.last || 0) + INTERVALS[levelOf(s)] * DAY - (levelOf(s) ? SLACK : 0); }
+function applyAnswer(s, right, t) {
+  const first = !s.seen; let lvl = levelOf(s);
+  s.seen = (s.seen || 0) + 1; s.last = Math.max(s.last || 0, t);
+  if (right) { s.streak = (s.streak || 0) + 1; lvl = first ? 2 : Math.min(lvl + 1, 7); s.due = t + INTERVALS[lvl] * DAY - SLACK; }
+  else { s.wrong = (s.wrong || 0) + 1; s.streak = 0; s.lastWrong = t; lvl = 0; s.due = t; }
+  s.level = lvl;
+}
+// Status einer Frage
+const isRight = id => { const s = P.stats[id]; return !!(s && s.seen && s.streak > 0); };   // zuletzt richtig
+const isWrong = id => { const s = P.stats[id]; return !!(s && s.seen && !s.streak); };       // zuletzt falsch
+const isNew = id => !(P.stats[id] && P.stats[id].seen);
+const isDue = id => { const s = P.stats[id]; return !!(s && s.seen && dueOf(s) <= Date.now()); };
+
+function fmtDays(ms) {
+  const d = Math.round(ms / DAY);
+  if (d <= 0) return 'nächste Sitzung'; if (d === 1) return 'morgen';
+  if (d < 14) return `in ${d} Tagen`; if (d < 60) return `in ${Math.round(d / 7)} Wochen`; return `in ${Math.round(d / 30)} Monaten`;
+}
+
+/* ---------- Speichern / Synchronisieren ---------- */
+const lsGet = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (_) { return d; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) {} };
+let loaded = false;
+let pending = lsGet('lernapp_pending', []);
+let pendingSessions = lsGet('lernapp_pending_sessions', []);
+
+function applyLocal(a) {
+  const s = P.stats[a.id] || (P.stats[a.id] = { seen: 0, wrong: 0, streak: 0 });
+  applyAnswer(s, a.right, a.t);
+}
+async function api(path, body) {
+  if (WEB) return localApi(path, body);
+  const r = await fetch(path, body === undefined ? { cache: 'no-store' } : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+let flushChain = Promise.resolve();
+function flush() { return (flushChain = flushChain.then(doFlush)); } // nie zwei Übertragungen gleichzeitig
+async function doFlush() {
+  try {
+    if (pending.length) {
+      const send = pending.slice(); const d = await api('/api/answer', { answers: send });
+      pending = pending.slice(send.length); P = d; pending.forEach(applyLocal);
+    }
+    while (pendingSessions.length) { P = await api('/api/session', pendingSessions[0]); pendingSessions.shift(); pending.forEach(applyLocal); }
+    serverOK = true;
+  } catch (e) { serverOK = false; }
+  lsSet('lernapp_pending', pending); lsSet('lernapp_pending_sessions', pendingSessions);
+  if (!pending.length) lsSet('lernapp_cache', P);
+}
+async function loadProgress() {
+  await flush();
+  if (pending.length) { // Mac offline: letzter bekannter Stand + eigene offene Antworten
+    if (!loaded) { P = lsGet('lernapp_cache', { stats: {}, history: [] }); P.stats = P.stats || {}; pending.forEach(applyLocal); }
+    loaded = true; P.stats = P.stats || {}; P.history = P.history || []; return;
+  }
+  loaded = true;
+  try { P = await api('/api/progress'); serverOK = true; lsSet('lernapp_cache', P); }
+  catch (e) {
+    serverOK = false;
+    P = lsGet('lernapp_cache', { stats: {}, history: [] });
+    pending.forEach(applyLocal);
+  }
+  P.stats = P.stats || {}; P.history = P.history || [];
+}
+function record(id, right) {
+  const a = { id, right, t: Date.now() };
+  applyLocal(a);
+  pending.push(a); lsSet('lernapp_pending', pending);
+  flush();
+}
+
+/* ---------- Fortschritt im Browser (Web-Version) ---------- */
+const LDB = 'lernapp_db';
+function ldb() { const d = lsGet(LDB, null) || {}; d.stats = d.stats || {}; d.history = d.history || []; return d; }
+async function localApi(path, body) {
+  if (path.startsWith('/api/info')) return { urls: [], sync: !!SYNC };
+  if (path.startsWith('/api/sync')) { await webSync(); return ldb(); }
+  const d = ldb();
+  if (path.startsWith('/api/progress')) return d;
+  if (path.startsWith('/api/answer')) {
+    for (const a of body.answers) applyAnswer(d.stats[a.id] || (d.stats[a.id] = { seen: 0, wrong: 0, streak: 0 }), !!a.right, a.t || Date.now());
+  } else if (path.startsWith('/api/session')) {
+    d.history.push(body); d.history = d.history.slice(-300);
+  } else if (path.startsWith('/api/reset')) {
+    const t = Date.now(); d.deleted = d.deleted || {}; d.resetHist = d.resetHist || {};
+    for (const i of body.ids) { delete d.stats[i]; d.deleted[i] = t; }
+    d.resetHist[body.deck] = t;
+    d.history = d.history.filter(h => (h.deck || 'bio-gen-1') !== body.deck);
+  }
+  lsSet(LDB, d);
+  return d;
+}
+
+/* ---------- Synchronisieren (Handy <-> Mac über ein privates GitHub-Repo) ----------
+   Zusammenführen: pro Frage gewinnt der Stand, der zuletzt beantwortet wurde ("last").
+   Gelöschte Fächer werden über Zeitstempel (deleted/resetHist) gemerkt, damit alte Stände nicht zurückkommen.
+   Gleiche Logik steht in server.py (merge_progress). */
+function mergeP(a, b) {
+  const o = { stats: {}, history: [], deleted: {}, resetHist: {} };
+  for (const x of [a, b]) {
+    for (const [k, t] of Object.entries(x.deleted || {})) o.deleted[k] = Math.max(o.deleted[k] || 0, t);
+    for (const [k, t] of Object.entries(x.resetHist || {})) o.resetHist[k] = Math.max(o.resetHist[k] || 0, t);
+  }
+  for (const x of [a, b]) for (const [id, st] of Object.entries(x.stats || {})) {
+    if ((o.deleted[id] || 0) >= (st.last || 0)) continue;
+    const cur = o.stats[id];
+    if (!cur || (st.last || 0) > (cur.last || 0)) o.stats[id] = st;
+  }
+  const seen = new Set();
+  for (const h of [...(a.history || []), ...(b.history || [])]) {
+    const dk = h.deck || 'bio-gen-1';
+    if ((o.resetHist[dk] || 0) >= (h.t || 0)) continue;
+    const key = `${h.t}|${dk}|${h.title}`;
+    if (seen.has(key)) continue;
+    seen.add(key); o.history.push(h);
+  }
+  o.history.sort((x, y) => (x.t || 0) - (y.t || 0));
+  o.history = o.history.slice(-300);
+  return o;
+}
+const canon = o => JSON.stringify(o, (k, v) => v && typeof v === 'object' && !Array.isArray(v) ? Object.fromEntries(Object.entries(v).sort()) : v);
+const b64e = s => { const b = new TextEncoder().encode(s); let x = ''; for (let i = 0; i < b.length; i += 0x8000) x += String.fromCharCode(...b.subarray(i, i + 0x8000)); return btoa(x); };
+const b64d = s => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\s/g, '')), c => c.charCodeAt(0)));
+function ghFile(method, body) {
+  return fetch(`https://api.github.com/repos/${SYNC.owner}/${SYNC.repo}/contents/fortschritt.json` + (method === 'GET' ? `?t=${Date.now()}` : ''), {
+    method, cache: 'no-store', body: body && JSON.stringify(body),
+    headers: { Authorization: 'Bearer ' + SYNC.token, Accept: 'application/vnd.github+json' } });
+}
+async function webSync() {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const r = await ghFile('GET');
+    let remote = { stats: {}, history: [] }, sha;
+    if (r.status === 200) { const j = await r.json(); sha = j.sha; remote = JSON.parse(b64d(j.content)); }
+    else if (r.status !== 404) throw new Error('GitHub ' + r.status);
+    const merged = mergeP(ldb(), remote);
+    if (canon(merged) !== canon(mergeP(remote, {}))) {
+      const put = await ghFile('PUT', { message: 'Fortschritt synchronisiert', content: b64e(JSON.stringify(merged)), sha });
+      if (put.status === 409 || put.status === 422) continue; // jemand anderes war schneller -> nochmal
+      if (!put.ok) throw new Error('GitHub ' + put.status);
+    }
+    lsSet(LDB, mergeP(ldb(), merged)); // Antworten, die während des Syncs dazukamen, bleiben erhalten
+    return;
+  }
+  throw new Error('Konflikt');
+}
+let syncBusy = false, syncState = lsGet('lernapp_sync', { last: 0, err: '' });
+function syncText() {
+  if (syncBusy) return 'Synchronisiere …';
+  if (syncState.err) return '⚠️ ' + syncState.err;
+  return syncState.last ? 'Zuletzt synchronisiert: ' + new Date(syncState.last).toLocaleString('de-AT', { dateStyle: 'short', timeStyle: 'short' }) : 'Noch nicht synchronisiert';
+}
+function syncBox() {
+  if (!SYNC_ON) return '';
+  return `<div class="syncbar"><button class="ghost" id="syncbtn" onclick="doSync(true)">🔄 Synchronisieren</button><span class="hint" id="syncinfo">${esc(syncText())}</span></div>`;
+}
+function updSync() { const el = document.getElementById('syncinfo'); if (el) el.textContent = syncText(); }
+async function doSync(manual) {
+  if (!SYNC_ON || syncBusy) return;
+  syncBusy = true; updSync();
+  try {
+    await flush();
+    P = await api('/api/sync', {}); P.stats = P.stats || {}; P.history = P.history || [];
+    if (!WEB) lsSet('lernapp_cache', P);
+    syncState = { last: Date.now(), err: '' };
+  } catch (e) {
+    syncState.err = navigator.onLine === false ? 'Offline – wird beim nächsten Mal synchronisiert' : 'Synchronisieren fehlgeschlagen (' + e.message + ')';
+  }
+  syncBusy = false; lsSet('lernapp_sync', syncState); updSync();
+  if (!S && document.getElementById('syncbtn')) menu(); // Menü mit neuem Stand anzeigen
+}
+
+/* ---------- Menü ---------- */
+const chapIds = c => DB.questions.filter(q => q.chapter === c).map(q => q.id);
+const allIds = () => DB.questions.map(q => q.id);
+function counts(ids) {
+  return { total: ids.length, right: ids.filter(isRight).length, wrong: ids.filter(isWrong).length,
+           fresh: ids.filter(isNew).length, due: ids.filter(isDue).length };
+}
+function bar(c) {
+  return `<div class="bar"><i class="g" style="width:${100 * c.right / c.total}%"></i><i class="r" style="width:${100 * c.wrong / c.total}%"></i></div>`;
+}
+async function menu() {
+  S = null;
+  await loadProgress();
+  if (S) return;
+  const all = counts(allIds());
+  let h = (DECKS.length > 1 ? `<div class="deckbar">${DECKS.map(d => `<button class="deck ${d.id === DECK.id ? 'on' : ''}" onclick="switchDeck('${d.id}')">${esc(d.title)}</button>`).join('')}</div>` : '') +
+  `<h1>${esc(DECK.title)}</h1>
+  <p class="sub">${DECK.subtitle ? esc(DECK.subtitle) + '<br>' : ''}${all.total} Fragen · ${DB.chapters.length} Kapitel · <b style="color:var(--ok)">${all.right} richtig (${Math.round(100 * all.right / all.total)}%)</b></p>
+  ${syncBox()}
+  ${serverOK ? '' : `<div class="warnbox">Mac nicht erreichbar – deine Antworten werden hier zwischengespeichert${pending.length ? ` (${pending.length} offen)` : ''} und automatisch übertragen, sobald die Lernapp am Mac wieder läuft.</div>`}
+  <div class="grid">
+    <button class="card mode hero" onclick="startLearn(0)"><b>🌱 Schlau lernen – alle Kapitel</b><span>${all.due} fällig · ${all.fresh} neu. Wiederholung mit Abständen, Fragen nie zu oft hintereinander.</span></button>
+    <button class="card mode" onclick="startExam()"><b>Prüfung · ${examN()} Fragen</b><span>Zufällig aus allen Kapiteln. Auswertung erst am Ende.</span></button>
+    <button class="card mode" onclick="startEndless()"><b>Endlos zufällig</b><span>Alle Fragen zufällig, ohne Ende.</span></button>
+    <button class="card mode" onclick="startWrong(0)" ${all.wrong ? '' : 'disabled'}><b>Alle Fehler wiederholen</b><span>${all.wrong ? `${all.wrong} Fragen, die du zuletzt falsch hattest` : 'Aktuell keine falschen Fragen.'}</span></button>
+    <button class="card mode" onclick="statsView()"><b>Meine Fehler &amp; Statistik</b><span>Welche Fragen du am häufigsten falsch machst.</span></button>
+  </div>
+  <h2>Kapitel</h2>`;
+  let aiHead = false, kHead = false;
+  for (const ch of DB.chapters) {
+    if (ch.kahoot && !kHead) {
+      kHead = true;
+      h += `<h2 style="margin-top:34px">📝 Kahoot-Fragensammlung (Test 1 &amp; 2)</h2>
+        <p class="hint" style="margin:-6px 0 14px">Fragen aus „clear with kahoot test“ und „test 2 with kahoot link“, nach Themen sortiert. Die Kahoot-Lösungen wurden geprüft – wo der Schlüssel fachlich falsch war oder sich die Quellen widersprechen, steht ein ⚠️-Hinweis in der Lösung.</p>`;
+    }
+    if (ch.ai && !aiHead) {
+      aiHead = true;
+      h += `<h2 style="margin-top:34px">🤖 Zusatzkapitel von Claude</h2>
+        <p class="hint" style="margin:-6px 0 14px">Diese Fragen hat Claude (KI) nach dem offiziellen Lehrplan und deinen Protokollen erstellt – sie stammen <b>nicht</b> aus echten Prüfungen. Jede Frage ist mit 🤖 markiert.</p>`;
+    }
+    const c = counts(chapIds(ch.id));
+    h += `<div class="card chap">
+      <div class="head"><span class="t">${ch.id}. ${esc(ch.title)}</span><span class="n">${c.right} / ${c.total} richtig · ${Math.round(100 * c.right / c.total)}%</span></div>
+      ${bar(c)}
+      <div class="legend"><span>✓ ${c.right} richtig</span><span>✗ ${c.wrong} falsch</span><span>○ ${c.fresh} neu</span>${c.due ? `<span class="due">⟳ ${c.due} fällig</span>` : ''}</div>
+      <div class="cbtns">
+        <button class="btn" onclick="startLearn(${ch.id})">🌱 Schlau lernen</button>
+        <button class="ghost" onclick="startChapter(${ch.id})">Alle ${c.total} Fragen</button>
+        <button class="ghost red" onclick="startWrong(${ch.id})" ${c.wrong ? '' : 'disabled'}>Nur falsche (${c.wrong})</button>
+      </div></div>`;
+  }
+  h += `<details class="card" style="margin-top:20px"><summary style="cursor:pointer;font-weight:650">Wie funktioniert „Schlau lernen“?</summary>
+    <ul style="margin:10px 0 0;padding-left:20px;color:var(--mute);font-size:14px">
+    <li>Du lernst in Runden zu je ${ROUND} Fragen. Jede Runde enthält zuerst fällige Wiederholungen (max. ${MAX_DUE}) und wird mit <b>neuen Fragen</b> aufgefüllt – so kommst du garantiert durch alle Fragen durch.</li>
+    <li>Eine falsche Frage kommt <b>erst in der nächsten Runde</b> (mit anderen Fragen dazwischen) noch einmal – und <b>höchstens 1× pro Sitzung</b>. Danach kommt sie in der nächsten Sitzung wieder.</li>
+    <li>Richtig beantwortete Fragen kommen in wachsenden Abständen wieder: 1 → 3 → 7 → 14 → 30 → 60 Tage. Gleich beim ersten Mal richtig = 3 Tage.</li>
+    <li>Ist alles Fällige und Neue erledigt, kannst du mit den Fragen weiterüben, die als Nächstes fällig würden.</li></ul></details>`;
+  const local = /^(127\.|localhost)/.test(location.hostname);
+  if (local && PHONE_URLS.length) h += `<p class="hint" style="margin-top:24px">📱 Am Handy (gleiches WLAN) in Safari öffnen: ${PHONE_URLS.map(u => `<b>${esc(u)}</b>`).join(' oder ')} – dann „Teilen → Zum Home-Bildschirm“.</p>`;
+  $('#app').innerHTML = h;
+  scrollTo(0, 0);
+}
+
+/* ---------- Sessions ---------- */
+function baseSession(mode, title, extra = {}) {
+  S = Object.assign({ mode, title, ids: [], i: 0, right: 0, done: 0, answers: [], feedback: true, endless: false }, extra);
+}
+function startChapter(c) {
+  baseSession('chapter', `Kapitel ${c}: ${CH[c]}`, { chapter: c, ids: shuffle(chapIds(c)) });
+  showQ();
+}
+function startWrong(c) {
+  const ids = (c ? chapIds(c) : allIds()).filter(isWrong);
+  if (!ids.length) return;
+  baseSession('wrong', c ? `Falsche · Kapitel ${c}` : 'Alle Fehler', { chapter: c, ids: shuffle(ids) });
+  showQ();
+}
+function startExam() {
+  baseSession('exam', `Prüfung (${examN()} Fragen)`, { ids: shuffle(allIds()).slice(0, examN()), feedback: false });
+  showQ();
+}
+function startEndless() {
+  const pool = allIds();
+  baseSession('endless', 'Endlos zufällig', { ids: shuffle(pool), endless: true, pool });
+  showQ();
+}
+
+/* ---------- Schlau lernen ----------
+   - Runde = ROUND Fragen: fällige Wiederholungen (max MAX_DUE, älteste/schwächste zuerst) + neue Fragen.
+   - Falsch beantwortete Fragen werden in die 2. Hälfte der NÄCHSTEN Runde eingestreut (Abstand garantiert).
+   - Jede Frage höchstens 2× pro Sitzung (1× + 1 Wiederholung bei Fehler). */
+function startLearn(c) {
+  baseSession('learn', c ? `Schlau lernen · Kapitel ${c}` : 'Schlau lernen · alle Kapitel',
+    { chapter: c, pool: c ? chapIds(c) : allIds(), endless: true, used: {}, retry: [], round: 0, roundLen: 0, roundPos: 0, extra: false });
+  nextRound();
+  if (!S.ids.length) return learnEmpty();
+  showQ();
+}
+function nextRound() {
+  const used = S.used, now = Date.now();
+  const avail = S.pool.filter(id => !used[id]);
+  const due = avail.filter(isDue).sort((a, b) => levelOf(P.stats[a]) - levelOf(P.stats[b]) || dueOf(P.stats[a]) - dueOf(P.stats[b]));
+  const fresh = shuffle(avail.filter(isNew));
+  let pick = due.slice(0, MAX_DUE);
+  pick = pick.concat(fresh.slice(0, ROUND - pick.length));
+  if (pick.length < ROUND) pick = pick.concat(due.slice(MAX_DUE, MAX_DUE + ROUND - pick.length));
+  if (!pick.length && !S.retry.length) {
+    // alles Fällige + Neue erledigt: Extra-Übung mit den als Nächstes fälligen Fragen
+    S.extra = true;
+    const soon = avail.filter(id => !isNew(id)).sort((a, b) => dueOf(P.stats[a]) - dueOf(P.stats[b]));
+    pick = soon.slice(0, ROUND);
+  }
+  let round = shuffle(pick);
+  // Fehler aus der letzten Runde in die zweite Hälfte einstreuen
+  const retry = shuffle(S.retry); S.retry = [];
+  for (const id of retry) {
+    const lo = Math.ceil(round.length / 2), pos = lo + Math.floor(Math.random() * (round.length - lo + 1));
+    round.splice(pos, 0, id);
+  }
+  S.round++; S.roundLen = round.length; S.roundPos = 0;
+  S.ids = S.ids.slice(0, S.i).concat(round);
+}
+function learnEmpty() {
+  baseSession('none', '');
+  $('#app').innerHTML = `<div class="top"><button class="ghost" onclick="menu()">← Menü</button></div>
+    <div class="card"><div class="big">🎉</div><p><b>Alles erledigt!</b> In diesem Bereich gibt es gerade nichts mehr zu lernen.</p>
+    <button class="btn" onclick="menu()">Zurück zum Menü</button></div>`;
+  S = null;
+}
+
+function showQ() {
+  if (S.mode === 'learn' && S.i >= S.ids.length) {
+    nextRound();
+    if (S.i >= S.ids.length) return finish(true);
+  }
+  if (S.mode === 'endless' && S.i >= S.ids.length) S.ids = S.ids.concat(shuffle(S.pool));
+  const q = BYID[S.ids[S.i]];
+  // „All of the above“ bleibt immer an letzter Stelle, der Rest wird gemischt
+  const idx = (q.options || []).map((_, i) => i);
+  const pinned = idx.filter(i => /^(all|none) of the above/i.test(q.options[i]));
+  S.order = shuffle(idx.filter(i => !pinned.includes(i))).concat(pinned);
+  S.sel = new Set();
+  S.checked = false;
+  S.revealed = false;   // Lernkarte aufgedeckt?
+  S.showSol = false;    // „Show solution“ aufgeklappt?
+  S.kind = S.mode === 'learn' ? (S.used[q.id] ? 'again' : isNew(q.id) ? 'new' : 'rep') : null;
+  render();
+}
+function render() {
+  const q = BYID[S.ids[S.i]];
+  const st = P.stats[q.id];
+  let pos;
+  if (S.mode === 'learn') pos = `Runde ${S.round} · ${Math.min(S.roundPos + 1, S.roundLen)}/${S.roundLen}`;
+  else pos = `Frage ${S.i + 1} / ${S.endless ? '∞' : S.ids.length}`;
+  let h = `<div class="top"><button class="ghost" onclick="quit()">← Menü</button>
+    <span class="pill">${esc(S.title)}</span>
+    <span class="pill">${pos}${S.feedback && S.done ? ` · ${S.right}/${S.done} richtig` : ''}</span></div>`;
+  if (S.mode === 'learn' && S.extra) h += `<div class="infobox">✓ Alles Fällige und Neue ist erledigt. Du übst jetzt freiwillig die Fragen, die als Nächstes fällig würden.</div>`;
+  if (!S.endless) h += `<div class="progline"><i style="width:${100 * S.i / S.ids.length}%"></i></div>`;
+  else if (S.mode === 'learn') h += `<div class="progline"><i style="width:${100 * S.roundPos / Math.max(1, S.roundLen)}%"></i></div>`;
+  const badge = { new: '<span class="badge new">NEU</span>', rep: '<span class="badge rep">WIEDERHOLUNG</span>', again: '<span class="badge again">NOCHMAL</span>' }[S.kind] || '';
+  const isCard = q.type === 'card';
+  h += `<div class="card"><p class="q">${esc(q.q)}</p>
+    <div class="meta">${badge}${S.extra && S.mode === 'learn' ? '<span class="badge rep">EXTRA</span>' : ''}${q.ai ? '<span class="badge ai">🤖 VON CLAUDE</span>' : ''}${isCard ? '<span class="badge card">LERNKARTE</span>' : ''}Kapitel ${q.chapter} · Nr. ${q.num}${isCard ? '' : ' · Mehrfachauswahl möglich'}${st && st.wrong ? ` · <span style="color:var(--bad)">schon ${st.wrong}× falsch</span>` : ''}</div>`;
+  if (isCard) {
+    // Lernkarte: Frage → Antwort aufdecken → selbst bewerten
+    if (!S.revealed) {
+      h += `<div class="actions"><span class="hint">Erst selbst überlegen, dann aufdecken · Enter = Antwort zeigen</span>
+        <button class="btn" onclick="next()">Antwort zeigen</button></div></div>`;
+    } else {
+      h += `<div class="cardans">${esc(q.answer)}</div>${solutionBox(q, true)}
+        <div class="actions"><span class="hint">Tasten: 1 / ← = nicht gewusst · 2 / → = gewusst</span>
+        <span style="display:flex;gap:8px"><button class="ghost red" onclick="rate(false)">✗ Nicht gewusst</button>
+        <button class="btn" onclick="rate(true)">✓ Gewusst</button></span></div></div>`;
+    }
+    if (S.endless && S.done) h += `<p class="hint" style="margin-top:14px"><a href="#" onclick="finish();return false" style="color:var(--acc)">Sitzung beenden &amp; Auswertung anzeigen</a></p>`;
+    $('#app').innerHTML = h;
+    return;
+  }
+  S.order.forEach((oi, k) => {
+    let cls = 'opt', tag = '';
+    const sel = S.sel.has(oi), cor = q.correct[oi];
+    if (S.checked) {
+      cls += ' locked';
+      if (sel && cor) { cls += ' ok'; tag = 'richtig'; }
+      else if (sel && !cor) { cls += ' bad'; tag = 'falsch'; }
+      else if (!sel && cor) { cls += ' miss'; tag = '<span style="color:var(--ok)">fehlt</span>'; }
+    } else if (sel) cls += ' sel';
+    h += `<button class="${cls}" onclick="tog(${oi})"><span class="k">${LETTERS[k]}</span><span>${esc(q.options[oi])}</span>${tag ? `<span class="tag">${tag}</span>` : ''}</button>`;
+  });
+  if (S.checked) {
+    const sol = S.order.map((oi, k) => q.correct[oi] ? LETTERS[k] : '').filter(Boolean).join(', ');
+    h += `<div class="verdict ${S.lastRight ? 'ok' : 'bad'}">${S.lastRight ? '✓ Komplett richtig' : '✗ Nicht ganz – richtig wäre: ' + (sol || 'keine Antwort (alle falsch)')}</div>`;
+    if (S.mode === 'learn') {
+      const s = P.stats[q.id];
+      h += `<div class="next-info">${S.lastRight ? `Kommt wieder: ${fmtDays(dueOf(s) - Date.now())}` :
+        (S.kind === 'again' ? 'Kommt in der nächsten Sitzung wieder.' : 'Kommt in der nächsten Runde noch einmal – mit anderen Fragen dazwischen.')}</div>`;
+    }
+    if (hasSolution(q)) {
+      h += S.showSol ? solutionBox(q, false, S.order) :
+        `<button class="ghost solbtn ${S.lastRight ? '' : 'red'}" onclick="S.showSol=true;render()">💡 Show solution <span class="hint">(S)</span></button>`;
+    }
+  }
+  const last = !S.endless && S.i === S.ids.length - 1;
+  const label = S.feedback && !S.checked ? 'Prüfen' : (last ? 'Auswerten' : 'Weiter');
+  h += `<div class="actions"><span class="hint">Tasten: 1–${q.options.length} / A–${LETTERS[q.options.length - 1]} · Enter = ${label}</span>
+    <button class="btn" onclick="next()">${label} →</button></div></div>`;
+  if (S.endless && S.done) h += `<p class="hint" style="margin-top:14px"><a href="#" onclick="finish();return false" style="color:var(--acc)">Sitzung beenden &amp; Auswertung anzeigen</a></p>`;
+  $('#app').innerHTML = h;
+}
+function tog(oi) {
+  if (S.checked) return;
+  S.sel.has(oi) ? S.sel.delete(oi) : S.sel.add(oi);
+  render();
+}
+/* ---------- Lösung / Erklärung ---------- */
+const hasSolution = q => !!(q.explanation || q.note || q.source || q.ai);
+// {{n}} im Lösungstext = Antwort Nr. n in der Original-Reihenfolge der Quelle.
+// Wird beim Anzeigen durch den Buchstaben in der AKTUELLEN (gemischten) Reihenfolge + Antworttext ersetzt.
+function optRefs(text, q, order) {
+  return esc(text).replace(/\{\{(\d+)\}\}/g, (m, n) => {
+    const oi = +n - 1;
+    if (!q.options || !q.options[oi]) return m;
+    const k = order ? order.indexOf(oi) : -1;
+    return `${k >= 0 ? `<b>${LETTERS[k]}</b> ` : ''}„${esc(q.options[oi])}“`;
+  });
+}
+function solutionBox(q, compact, order) {
+  let h = `<div class="solution">${compact ? '' : '<div class="sol-h">💡 Solution</div>'}`;
+  if (!compact && q.options) {
+    const idx = order || q.options.map((_, i) => i);
+    h += `<div class="sol-right">Correct: ${idx.map((oi, k) => q.correct[oi] ? (order ? `<b>${LETTERS[k]}</b> ` : '') + esc(q.options[oi]) : null).filter(Boolean).join(' · ') || 'none of the statements'}</div>`;
+  }
+  if (q.explanation) h += `<p>${optRefs(q.explanation, q, order)}</p>`;
+  if (q.note) h += `<p class="sol-note">⚠️ ${optRefs(q.note, q, order)}</p>`;
+  if (q.ai) h += `<p class="hint" style="margin:6px 0 0">🤖 Diese Frage hat Claude (KI) nach dem offiziellen Lehrplan erstellt – sie stammt nicht aus deinen Unterlagen.</p>`;
+  else if (q.source && q.source.kahoot) h += `<p class="hint" style="margin:6px 0 0">Quelle: Kahoot-Fragensammlung (Test 1 &amp; 2) – Lösung geprüft, Erklärung von Claude</p>`;
+  else if (q.source && q.source.page) h += `<p class="hint" style="margin:6px 0 0">Quelle: ${esc(DECK.title)} – PDF-Seite ${q.source.page}</p>`;
+  return h + `</div>`;
+}
+function rate(right) {
+  if (!S.revealed) return;
+  S.lastRight = evaluate(right);
+  if (!S.endless && S.i >= S.ids.length - 1) return finish();
+  S.i++; S.roundPos++; showQ(); scrollTo(0, 0);
+}
+
+function evaluate(forced) {
+  const q = BYID[S.ids[S.i]];
+  const right = forced ?? q.correct.every((c, oi) => c === S.sel.has(oi));
+  S.done++; if (right) S.right++;
+  S.answers.push({ id: q.id, sel: [...S.sel], order: S.order, right });
+  record(q.id, right);
+  if (S.mode === 'learn') {
+    const firstTime = !S.used[q.id];
+    S.used[q.id] = (S.used[q.id] || 0) + 1;
+    if (!right && firstTime) S.retry.push(q.id); // max. 1 Wiederholung pro Sitzung
+  }
+  return right;
+}
+function next() {
+  if (BYID[S.ids[S.i]].type === 'card') { if (!S.revealed) { S.revealed = true; render(); } return; }
+  if (S.feedback && !S.checked) { S.lastRight = evaluate(); S.checked = true; render(); return; }
+  if (!S.feedback) evaluate();
+  if (!S.endless && S.i >= S.ids.length - 1) return finish();
+  S.i++; S.roundPos++; showQ(); scrollTo(0, 0);
+}
+function quit() {
+  if (S && S.mode === 'exam' && S.done > 0 && !confirm('Prüfung abbrechen? Bisherige Antworten bleiben gespeichert.')) return;
+  if (S && S.done > 0 && S.mode !== 'exam') return finish();
+  menu();
+}
+function finish(allDone) {
+  const entry = { t: Date.now(), deck: DECK.id, mode: S.mode, title: S.title, right: S.right, total: S.done };
+  if (S.done) {
+    P.history.push(entry);
+    pendingSessions.push(entry); lsSet('lernapp_pending_sessions', pendingSessions);
+    flush().then(() => doSync());
+  }
+  const wrong = S.answers.filter(a => !a.right);
+  // Fortschritt immer auf ALLE Fragen des Bereichs bezogen
+  const scope = S.chapter ? chapIds(S.chapter) : (S.mode === 'exam' ? S.ids : allIds());
+  const c = counts(scope);
+  const scopeName = S.chapter ? `Kapitel ${S.chapter}` : (S.mode === 'exam' ? 'diese Prüfung' : 'alle Fragen');
+  let main, sub;
+  if (S.mode === 'exam') {
+    const pct = Math.round(100 * S.right / S.ids.length);
+    main = `${S.right} / ${S.ids.length}`;
+    sub = `${pct}% der Prüfungsfragen richtig${S.done < S.ids.length ? ` (abgebrochen nach ${S.done} Fragen – unbeantwortete zählen als falsch)` : ''}`;
+  } else {
+    main = `${c.right} / ${c.total}`;
+    sub = `${Math.round(100 * c.right / c.total)}% von ${scopeName} richtig · in dieser Sitzung ${S.right} von ${S.done} Antworten richtig`;
+  }
+  let h = `<div class="top"><button class="ghost" onclick="menu()">← Menü</button><span class="pill">${esc(S.title)}</span></div>
+    <div class="card">${allDone ? '<p><b>🎉 Für heute ist hier alles erledigt.</b></p>' : ''}
+    <div class="pill">${S.mode === 'exam' ? 'Ergebnis' : 'Fortschritt'}</div>
+    <div class="big" style="color:var(--ok)">${main}</div><div>${sub}</div>
+    ${S.mode !== 'exam' ? bar(c) : ''}
+    <div class="actions" style="justify-content:flex-start;flex-wrap:wrap">
+      ${S.mode === 'learn' ? `<button class="btn" onclick="startLearn(${S.chapter || 0})">Weiterlernen</button>` : `<button class="btn" onclick="again()">Nochmal</button>`}
+      ${wrong.length ? `<button class="ghost" onclick="retryWrong()">Die ${wrong.length} falschen dieser Sitzung nochmal</button>` : ''}</div></div>`;
+  if (wrong.length) {
+    h += `<h2>Falsch beantwortet</h2><div class="card">`;
+    const seenIds = new Set();
+    for (const a of wrong) {
+      if (seenIds.has(a.id)) continue; seenIds.add(a.id);
+      const q = BYID[a.id];
+      h += `<details class="row" open><summary><span class="cnt">${q.chapter}-${q.num}</span><span>${esc(q.q)}</span></summary>` + answerList(q, a) +
+        (hasSolution(q) ? `<details class="solwrap"><summary>💡 Show solution</summary>${solutionBox(q, true, a.order)}</details>` : '') + `</details>`;
+    }
+    h += `</div>`;
+  }
+  const last = S;
+  S = null;
+  window._last = { mode: last.mode, chapter: last.chapter, wrong: [...new Set(wrong.map(a => a.id))] };
+  $('#app').innerHTML = h; scrollTo(0, 0);
+}
+// Antwortliste für Auswertung/Statistik (a = gegebene Antwort, optional)
+function answerList(q, a) {
+  if (q.type === 'card') return `<ul><li class="c">${esc(q.answer)}</li></ul>`;
+  const order = a ? a.order : q.options.map((_, i) => i);
+  return `<ul>` + order.map((oi, k) => `<li class="${q.correct[oi] ? 'c' : ''}">${a ? LETTERS[k] + ') ' : ''}${esc(q.options[oi])}${a && a.sel.includes(oi) ? ' <em style="color:var(--mute);font-weight:400">(deine Wahl)</em>' : ''}</li>`).join('') + `</ul>`;
+}
+function again() {
+  const a = window._last;
+  if (a.mode === 'exam') return startExam();
+  if (a.mode === 'endless') return startEndless();
+  if (a.mode === 'wrong') return (a.chapter ? chapIds(a.chapter) : allIds()).some(isWrong) ? startWrong(a.chapter || 0) : menu();
+  if (a.mode === 'chapter') return startChapter(a.chapter);
+  menu();
+}
+function retryWrong() {
+  baseSession('retry', 'Falsche dieser Sitzung', { ids: shuffle(window._last.wrong), chapter: window._last.chapter });
+  showQ();
+}
+
+/* ---------- Statistik ---------- */
+let statFilter = 0;
+async function statsView(refresh = true) {
+  S = null;
+  if (refresh) await loadProgress();
+  const ent = Object.entries(P.stats).filter(([id, s]) => BYID[id] && s.seen);
+  const seen = ent.reduce((a, [, s]) => a + s.seen, 0), wrongN = ent.reduce((a, [, s]) => a + s.wrong, 0);
+  const all = counts(allIds());
+  let list = ent.filter(([id, s]) => s.wrong > 0 && (!statFilter || BYID[id].chapter === statFilter))
+    .sort((a, b) => b[1].wrong - a[1].wrong || (b[1].wrong / b[1].seen) - (a[1].wrong / a[1].seen));
+  let h = `<div class="top"><button class="ghost" onclick="menu()">← Menü</button><span class="pill">Statistik</span></div>
+    <div class="stats3">
+      <div class="card"><b>${all.right} / ${all.total}</b><span>Fragen zuletzt richtig (${Math.round(100 * all.right / all.total)}%)</span></div>
+      <div class="card"><b>${all.total - all.fresh}</b><span>Fragen schon gesehen</span></div>
+      <div class="card"><b>${seen ? Math.round(100 * (seen - wrongN) / seen) : 0}%</b><span>Trefferquote aller ${seen} Antworten</span></div>
+    </div>
+    <h2>Am häufigsten falsch</h2>
+    <div class="actions" style="justify-content:flex-start;margin:0 0 12px">
+      <select onchange="statFilter=+this.value;statsView(false)"><option value="0">Alle Kapitel</option>
+      ${DB.chapters.map(c => `<option value="${c.id}" ${statFilter === c.id ? 'selected' : ''}>${c.id}. ${esc(c.title)}</option>`).join('')}</select>
+    </div><div class="card">`;
+  if (!list.length) h += `<p class="sub" style="margin:0">Keine Fehler gespeichert${statFilter ? ' in diesem Kapitel' : ''}. 🎉</p>`;
+  for (const [id, s] of list) {
+    const q = BYID[id];
+    h += `<details class="row"><summary><span class="cnt">${s.wrong}× falsch</span><span>${esc(q.q)}<br><span class="hint">Kapitel ${q.chapter} · Nr. ${q.num} · ${s.seen}× beantwortet · ${s.streak ? `zuletzt richtig · wieder ${fmtDays(dueOf(s) - Date.now())}` : 'zuletzt falsch'}</span></span></summary>` +
+      answerList(q) + (hasSolution(q) ? solutionBox(q, true) : '') + `</details>`;
+  }
+  h += `</div>`;
+  const hist = P.history.filter(x => (x.deck || 'bio-gen-1') === DECK.id);
+  if (hist.length) {
+    h += `<h2>Letzte Sitzungen</h2><div class="card">` + hist.slice(-15).reverse().map(x =>
+      `<div class="row" style="display:flex;justify-content:space-between;gap:12px"><span>${esc(x.title)}<br><span class="hint">${new Date(x.t).toLocaleString('de-AT')}</span></span><b>${x.right}/${x.total}</b></div>`).join('') + `</div>`;
+  }
+  h += `<p style="margin-top:28px"><button class="ghost red" onclick="resetAll()">Fortschritt in „${esc(DECK.title)}“ löschen</button></p>`;
+  $('#app').innerHTML = h;
+}
+function resetAll() {
+  if (!confirm(`Wirklich alle gespeicherten Antworten und Fehler im Fach „${DECK.title}“ löschen (auf allen Geräten)? Andere Fächer bleiben erhalten.`)) return;
+  const ids = allIds(), idset = new Set(ids);
+  pending = pending.filter(a => !idset.has(a.id)); pendingSessions = pendingSessions.filter(x => (x.deck || 'bio-gen-1') !== DECK.id);
+  lsSet('lernapp_pending', pending); lsSet('lernapp_pending_sessions', pendingSessions);
+  api('/api/reset', { ids, deck: DECK.id }).then(d => { P = d; statsView(false); doSync(); }).catch(() => alert('Mac nicht erreichbar – Löschen nur möglich, wenn die Lernapp am Mac läuft.'));
+}
+
+/* ---------- Tastatur ---------- */
+document.addEventListener('keydown', e => {
+  if (!S || e.metaKey || e.ctrlKey || e.altKey || !S.ids.length) return;
+  const q = BYID[S.ids[S.i]]; if (!q) return;
+  const k = e.key.toLowerCase();
+  if (q.type === 'card') {
+    if (!S.revealed) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); next(); } return; }
+    if (k === '1' || e.key === 'ArrowLeft') { e.preventDefault(); rate(false); }
+    else if (k === '2' || e.key === 'ArrowRight') { e.preventDefault(); rate(true); }
+    return;
+  }
+  if (!$('.opt')) return;
+  const n = q.options.length;
+  let idx = '123456'.slice(0, n).indexOf(k); if (idx < 0) idx = 'abcdef'.slice(0, n).indexOf(k);
+  if (idx >= 0 && k.length === 1) { e.preventDefault(); tog(S.order[idx]); }
+  else if (k === 's' && S.checked && hasSolution(q)) { e.preventDefault(); S.showSol = !S.showSol; render(); }
+  else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); next(); }
+});
+
+/* ---------- Fächer (Decks) ---------- */
+async function loadDeck(id) {
+  const d = DECKS.find(x => x.id === id) || DECKS[0];
+  const data = await getJSON(d.file);
+  // Fragen-IDs bekommen das Präfix des Fachs, damit sich der Fortschritt der Fächer nie vermischt
+  data.questions.forEach(q => { q.id = d.prefix + q.id; });
+  DECK = d; DB = data; CH = {}; BYID = {};
+  DB.chapters.forEach(c => CH[c.id] = c.title);
+  DB.questions.forEach(q => BYID[q.id] = q);
+  statFilter = 0;
+  try { localStorage.setItem('lernapp_deck', d.id); } catch (_) {}
+  document.title = d.title + ' – Lernapp';
+}
+async function switchDeck(id) { await loadDeck(id); menu(); }
+
+/* ---------- Start ---------- */
+(async () => {
+  if (WEB) { await window.LERNAPP_READY; SYNC = window.LERNAPP_SYNC || null; }
+  try {
+    try { DECKS = await getJSON('decks.json'); }
+    catch (_) { DECKS = [{ id: 'bio-gen-1', title: 'Medical Biology & Genetics 1', subtitle: '', file: 'questions.json', prefix: '' }]; }
+    let want; try { want = localStorage.getItem('lernapp_deck'); } catch (_) {}
+    await loadDeck(want);
+  } catch (e) { $('#app').innerHTML = '<div class="card">Fragen konnten nicht geladen werden. Bitte über <b>„Lernapp starten.command“</b> öffnen.</div>'; return; }
+  try { const info = await api('/api/info'); PHONE_URLS = info.urls || []; SYNC_ON = !!info.sync; } catch (_) {}
+  await menu();
+  doSync(); // beim Öffnen gleich den neuesten Stand holen
+})();
+// Zurück zur App (z. B. Handy entsperrt): offene Antworten nachschicken + abgleichen; beim Verlassen ebenfalls abgleichen
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) { flush(); if (Date.now() - syncState.last > 60000) doSync(); }
+  else doSync();
+});
+</script>
+</body>
+</html>
