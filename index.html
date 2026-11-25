@@ -113,6 +113,9 @@ select{font:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--l
 .badge.ai{background:var(--acc-soft);color:var(--acc);border:1px dashed var(--acc)}
 .badge.card{background:var(--warm-soft);color:var(--warm)}
 .cardans{background:var(--acc-soft);border-left:4px solid var(--acc);border-radius:10px;padding:14px 16px;font-size:17px;font-weight:600;margin:6px 0 10px;white-space:pre-wrap}
+.cardans.long{font-size:15px;font-weight:450;line-height:1.55}
+.qimg{display:block;max-width:100%;max-height:42vh;border-radius:12px;margin:4px 0 12px;cursor:zoom-in;border:1px solid var(--line)}
+.qimg.big{max-height:none;cursor:zoom-out}
 .solution{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:12px 0 4px;font-size:15px}
 .solution p{margin:6px 0}
 .sol-h{font-weight:700;margin-bottom:4px}
@@ -186,6 +189,7 @@ let S = null; // aktuelle Session
 // WEB = veröffentlichte Version (GitHub Pages): Fragen kommen entschlüsselt aus data.enc.json, Fortschritt liegt im Browser
 const WEB = !!window.LERNAPP_WEB;
 let SYNC = null, SYNC_ON = false;
+const imgURL = p => WEB ? (window.LERNAPP_DATA[p] || '') : p;
 async function getJSON(p) {
   if (WEB) return JSON.parse(JSON.stringify(window.LERNAPP_DATA[p]));
   return (await fetch(p, { cache: 'no-store' })).json();
@@ -391,16 +395,21 @@ async function menu() {
     <button class="card mode" onclick="startEndless()"><b>Endlos zufällig</b><span>Alle Fragen zufällig, ohne Ende.</span></button>
     <button class="card mode" onclick="startWrong(0)" ${all.wrong ? '' : 'disabled'}><b>Alle Fehler wiederholen</b><span>${all.wrong ? `${all.wrong} Fragen, die du zuletzt falsch hattest` : 'Aktuell keine falschen Fragen.'}</span></button>
     <button class="card mode" onclick="statsView()"><b>Meine Fehler &amp; Statistik</b><span>Welche Fragen du am häufigsten falsch machst.</span></button>
-  </div>
-  <h2>Kapitel</h2>`;
-  let aiHead = false, kHead = false;
+  </div>`;
+  let aiHead = false, kHead = false, pHead = false, cHead = false;
   for (const ch of DB.chapters) {
+    if (ch.practical && !pHead) {
+      pHead = true;
+      h += `<h2>🔬 Practical exam</h2>
+        <p class="hint" style="margin:-6px 0 14px">Mit deinen Fotos aus dem Praktikumsraum: Gerät erkennen, Vorgehen erklären, Formeln anwenden. Inhalte aus deinen Protokollen, erstellt von Claude. Tipp: Foto antippen = größer.</p>`;
+    }
+    if (!ch.practical && !cHead) { cHead = true; h += `<h2${pHead ? ' style="margin-top:34px"' : ''}>Kapitel</h2>`; }
     if (ch.kahoot && !kHead) {
       kHead = true;
       h += `<h2 style="margin-top:34px">📝 Kahoot-Fragensammlung (Test 1 &amp; 2)</h2>
         <p class="hint" style="margin:-6px 0 14px">Fragen aus „clear with kahoot test“ und „test 2 with kahoot link“, nach Themen sortiert. Die Kahoot-Lösungen wurden geprüft – wo der Schlüssel fachlich falsch war oder sich die Quellen widersprechen, steht ein ⚠️-Hinweis in der Lösung.</p>`;
     }
-    if (ch.ai && !aiHead) {
+    if (ch.ai && !ch.practical && !aiHead) {
       aiHead = true;
       h += `<h2 style="margin-top:34px">🤖 Zusatzkapitel von Claude</h2>
         <p class="hint" style="margin:-6px 0 14px">Diese Fragen hat Claude (KI) nach dem offiziellen Lehrplan und deinen Protokollen erstellt – sie stammen <b>nicht</b> aus echten Prüfungen. Jede Frage ist mit 🤖 markiert.</p>`;
@@ -527,7 +536,7 @@ function render() {
   else if (S.mode === 'learn') h += `<div class="progline"><i style="width:${100 * S.roundPos / Math.max(1, S.roundLen)}%"></i></div>`;
   const badge = { new: '<span class="badge new">NEU</span>', rep: '<span class="badge rep">WIEDERHOLUNG</span>', again: '<span class="badge again">NOCHMAL</span>' }[S.kind] || '';
   const isCard = q.type === 'card';
-  h += `<div class="card"><p class="q">${esc(q.q)}</p>
+  h += `<div class="card"><p class="q">${esc(q.q)}</p>${q.img ? `<img class="qimg" src="${imgURL(q.img)}" alt="Foto" onclick="this.classList.toggle('big')">` : ''}
     <div class="meta">${badge}${S.extra && S.mode === 'learn' ? '<span class="badge rep">EXTRA</span>' : ''}${q.ai ? '<span class="badge ai">🤖 VON CLAUDE</span>' : ''}${isCard ? '<span class="badge card">LERNKARTE</span>' : ''}Kapitel ${q.chapter} · Nr. ${q.num}${isCard ? '' : ' · Mehrfachauswahl möglich'}${st && st.wrong && S.mode !== 'exam' ? ` · <span style="color:var(--bad)">schon ${st.wrong}× falsch</span>` : ''}</div>`;
   if (isCard) {
     // Lernkarte: Frage → Antwort aufdecken → selbst bewerten
@@ -535,7 +544,7 @@ function render() {
       h += `<div class="actions"><span class="hint">Erst selbst überlegen, dann aufdecken · Enter = Antwort zeigen</span>
         <button class="btn" onclick="next()">Antwort zeigen</button></div></div>`;
     } else {
-      h += `<div class="cardans">${esc(q.answer)}</div>${solutionBox(q, true)}
+      h += `<div class="cardans${q.answer.includes('\n') ? ' long' : ''}">${esc(q.answer)}</div>${solutionBox(q, true)}
         <div class="actions"><span class="hint">Tasten: 1 / ← = nicht gewusst · 2 / → = gewusst</span>
         <span style="display:flex;gap:8px"><button class="ghost red" onclick="rate(false)">✗ Nicht gewusst</button>
         <button class="btn" onclick="rate(true)">✓ Gewusst</button></span></div></div>`;
