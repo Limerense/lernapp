@@ -61,7 +61,8 @@ button.ghost.red{color:var(--bad)}
 .top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
 .pill{font-size:13px;color:var(--mute)}
 .learnstat{margin:-6px 0 14px}
-.passline{font-size:13px;margin:8px 0 2px;color:var(--ink)}
+.passline{font-size:13px;margin:8px 0 2px;color:var(--mute)}
+.passtag{display:inline-block;font-size:12px;font-weight:700;color:var(--acc);background:var(--acc-soft);border-radius:6px;padding:2px 8px;margin-right:4px}
 .infobox.passdone{border:1px solid var(--ok);font-size:15px;line-height:1.5}.learnstat .bar{margin:0 0 6px}
 .q{font-size:19px;font-weight:650;margin:0 0 6px}
 .meta{font-size:13px;color:var(--mute);margin-bottom:16px}
@@ -232,6 +233,14 @@ function passSummary(c, p) {   // Ergebnis eines Durchgangs eines Kapitels
 const isRight = id => curRes(id) === true;
 const isWrong = id => curRes(id) === false;
 const isOpen = id => curRes(id) === null;
+// zum Üben: im aktuellen Durchgang falsch ODER im letzten Durchgang falsch und seither noch nicht neu beantwortet
+const toFix = id => { const r = curRes(id); return r === false || (r === null && passRes(P.stats[id], passOf(id) - 1) === false); };
+// Anzeige im Menü: letzter abgeschlossener Durchgang (wie früher), solange gibt es den nicht: aktueller Stand
+function chapView(cid) {
+  const ids = chapIds(cid), cp = chapPass(cid), c = counts(ids);
+  if (cp > 1) { const x = passSummary(cid, cp - 1); return { cp, cur: c, total: ids.length, right: x.r, wrong: x.w, done: true }; }
+  return { cp, cur: c, total: ids.length, right: c.right, wrong: c.wrong, done: false };
+}
 const isNew = id => !(P.stats[id] && P.stats[id].seen);
 const isDue = id => { const s = P.stats[id]; return !!(s && s.seen && dueOf(s) <= Date.now()); };
 
@@ -410,16 +419,18 @@ async function menu() {
   await loadProgress();
   if (S) return;
   const all = counts(allIds());
+  const vs = DB.chapters.map(ch => chapView(ch.id)), vR = vs.reduce((a, v) => a + v.right, 0), vW = vs.reduce((a, v) => a + v.wrong, 0);
+  all.fix = allIds().filter(toFix).length;
   let h = (DECKS.length > 1 ? `<div class="deckbar">${DECKS.map(d => `<button class="deck ${d.id === DECK.id ? 'on' : ''}" onclick="switchDeck('${d.id}')">${esc(d.title)}</button>`).join('')}</div>` : '') +
   `<h1>${esc(DECK.title)}</h1>
-  <p class="sub">${DECK.subtitle ? esc(DECK.subtitle) + '<br>' : ''}${all.total} Fragen · ${DB.chapters.length} Kapitel · <b style="color:var(--ok)">${all.right} richtig</b> · <b style="color:var(--bad)">${all.wrong} falsch</b> · ${all.fresh} offen</p>
+  <p class="sub">${DECK.subtitle ? esc(DECK.subtitle) + '<br>' : ''}${all.total} Fragen · ${DB.chapters.length} Kapitel · <b style="color:var(--ok)">${vR} richtig (${Math.round(100 * vR / all.total)}%)</b> · <b style="color:var(--bad)">${vW} falsch</b></p>
   ${syncBox()}
   ${serverOK ? '' : `<div class="warnbox">Mac nicht erreichbar – deine Antworten werden hier zwischengespeichert${pending.length ? ` (${pending.length} offen)` : ''} und automatisch übertragen, sobald die Lernapp am Mac wieder läuft.</div>`}
   <div class="grid">
     <button class="card mode hero" onclick="startLearn(0)"><b>🌱 Schlau lernen – alle Kapitel</b><span>${all.due} fällig · ${all.fresh} offen. Wiederholung mit Abständen, Fragen nie zu oft hintereinander.</span></button>
     <button class="card mode" onclick="startExam()"><b>Prüfung · ${examN()} Fragen</b><span>Zufällig aus allen Kapiteln. Auswertung erst am Ende.</span></button>
     <button class="card mode" onclick="startEndless()"><b>Endlos zufällig</b><span>Alle Fragen zufällig, ohne Ende.</span></button>
-    <button class="card mode" onclick="startWrong(0)" ${all.wrong ? '' : 'disabled'}><b>Alle Fehler wiederholen</b><span>${all.wrong ? `${all.wrong} Fragen, die du zuletzt falsch hattest` : 'Aktuell keine falschen Fragen.'}</span></button>
+    <button class="card mode" onclick="startWrong(0)" ${all.fix ? '' : 'disabled'}><b>Alle Fehler wiederholen</b><span>${all.fix ? `${all.fix} Fragen, die du falsch hattest` : 'Aktuell keine falschen Fragen.'}</span></button>
     <button class="card mode" onclick="statsView()"><b>Meine Fehler &amp; Statistik</b><span>Welche Fragen du am häufigsten falsch machst.</span></button>
   </div>`;
   let aiHead = false, kHead = false, pHead = false, cHead = false;
@@ -440,16 +451,16 @@ async function menu() {
       h += `<h2 style="margin-top:34px">🤖 Zusatzkapitel von Claude</h2>
         <p class="hint" style="margin:-6px 0 14px">Diese Fragen hat Claude (KI) nach dem offiziellen Lehrplan und deinen Protokollen erstellt – sie stammen <b>nicht</b> aus echten Prüfungen. Jede Frage ist mit 🤖 markiert.</p>`;
     }
-    const c = counts(chapIds(ch.id)), cp = chapPass(ch.id), lp = cp > 1 ? passSummary(ch.id, cp - 1) : null;
+    const v = chapView(ch.id), c = v.cur, cp = v.cp, fix = chapIds(ch.id).filter(toFix).length;
     h += `<div class="card chap">
-      <div class="head"><span class="t">${ch.id}. ${esc(ch.title)}</span><span class="n">${c.total - c.fresh} / ${c.total} beantwortet${cp > 1 ? ` · Durchgang ${cp}` : ''}</span></div>
-      ${bar(c)}
-      <div class="legend"><span>✓ ${c.right} richtig</span><span>✗ ${c.wrong} falsch</span><span>○ ${c.fresh} offen</span>${c.due ? `<span class="due">⟳ ${c.due} fällig</span>` : ''}</div>
-      ${lp ? `<div class="passline">🏁 Durchgang ${cp - 1} abgeschlossen: <b>${lp.r} / ${lp.n} richtig (${lp.pct}%)</b> · ${lp.w} falsch — jetzt läuft Durchgang ${cp}</div>` : ''}
+      <div class="head"><span class="t">${ch.id}. ${esc(ch.title)}</span><span class="n">${v.right} / ${v.total} richtig · ${Math.round(100 * v.right / v.total)}%</span></div>
+      ${bar(v)}
+      <div class="legend"><span>✓ ${v.right} richtig</span><span>✗ ${v.wrong} falsch</span>${v.done ? `<span style="color:var(--ok);font-weight:600">🏁 Durchgang ${cp - 1} erledigt</span>` : `<span>○ ${c.fresh} offen</span>`}${c.due ? `<span class="due">⟳ ${c.due} fällig</span>` : ''}</div>
+      <div class="passline"><span class="passtag">Durchgang ${cp}</span> ${c.total - c.fresh} / ${c.total} beantwortet${v.done && c.total - c.fresh ? ` · bisher ✓ ${c.right} ✗ ${c.wrong}` : ''}</div>
       <div class="cbtns">
         <button class="btn" onclick="startLearn(${ch.id})">🌱 Schlau lernen</button>
         <button class="ghost" onclick="startChapter(${ch.id})">${c.fresh < c.total ? `Weiter: Frage ${c.total - c.fresh + 1} / ${c.total}` : `Alle ${c.total} Fragen`}</button>
-        <button class="ghost red" onclick="startWrong(${ch.id})" ${c.wrong ? '' : 'disabled'}>Nur falsche (${c.wrong})</button>
+        <button class="ghost red" onclick="startWrong(${ch.id})" ${fix ? '' : 'disabled'}>Nur falsche (${fix})</button>
       </div></div>`;
   }
   h += `<details class="card" style="margin-top:20px"><summary style="cursor:pointer;font-weight:650">Wie funktioniert „Schlau lernen“?</summary>
@@ -477,7 +488,7 @@ function startChapter(c) {
   showQ();
 }
 function startWrong(c) {
-  const ids = (c ? chapIds(c) : allIds()).filter(isWrong);
+  const ids = (c ? chapIds(c) : allIds()).filter(toFix);
   if (!ids.length) return;
   baseSession('wrong', c ? `Falsche · Kapitel ${c}` : 'Alle Fehler', { chapter: c, ids: shuffle(ids) });
   showQ();
@@ -749,7 +760,7 @@ function again() {
   const a = window._last;
   if (a.mode === 'exam') return startExam();
   if (a.mode === 'endless') return startEndless();
-  if (a.mode === 'wrong') return (a.chapter ? chapIds(a.chapter) : allIds()).some(isWrong) ? startWrong(a.chapter || 0) : menu();
+  if (a.mode === 'wrong') return (a.chapter ? chapIds(a.chapter) : allIds()).some(toFix) ? startWrong(a.chapter || 0) : menu();
   if (a.mode === 'chapter') return startChapter(a.chapter);
   menu();
 }
