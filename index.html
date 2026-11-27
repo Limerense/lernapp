@@ -130,6 +130,67 @@ select{font:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--l
 .solwrap summary{cursor:pointer;color:var(--acc);font-size:14px;font-weight:600}
 @media (max-width:520px){.solwrap{margin-left:0}}
 @media (max-width:520px){.stats3{grid-template-columns:1fr}.row ul{margin-left:0}.cbtns button{flex:1 1 100%}}
+
+/* ---------- Fragenseite im Moodle-Look (wie der echte Test, moodle.uniba.sk) ---------- */
+html:has(body.mdl-on){background:#fff}
+body.mdl-on{background:#fff;color:#373a3c}
+body.mdl-on .wrap{max-width:900px;padding-top:max(10px,env(safe-area-inset-top))}
+.mdl{--bg:#eef3ee;--card:#fbfcf8;--ink:#17302f;--mute:#5e7470;--line:#d3e0d8;--acc:#1e7c74;--acc-soft:#dcefe9;--on-acc:#fff;
+  --ok:#2f8f4e;--ok-soft:#e1f2e5;--bad:#c2553d;--bad-soft:#f8e5df;--warm:#b8701f;--warm-soft:#f8ead7}
+.mdl{font-family:Charter,"Bitstream Charter",Georgia,"Times New Roman",serif;color:#373a3c;font-size:17px}
+.mdl-head{background:#343a40;color:#fff;border-bottom:4px solid #a52a2a;border-radius:6px 6px 0 0;padding:12px 16px 10px;margin:0 -4px}
+.mdl-course{font-size:19px;font-weight:700}
+.mdl-crumb{font-size:13px;color:#ced4da;margin-top:2px}
+.mdl-toprow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:16px 0 14px}
+.mdl button{font-family:inherit;-webkit-tap-highlight-color:transparent}
+.mdl-back{background:#46525e;color:#fff;border:0;border-radius:3px;padding:9px 16px;font-size:14px;letter-spacing:.02em;cursor:pointer}
+.mdl-timer{display:flex;gap:6px;align-items:stretch;margin-left:auto}
+.mdl-tbox{border:1px solid #c9302c;padding:7px 12px;font-size:16px;color:#373a3c;background:#fff}
+.mdl-tbox.hid{visibility:hidden}
+.mdl-info{background:#f4f4f4;border:1px solid #cfcfcf;padding:10px 12px;font-size:15px;color:#555;margin-bottom:12px;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center}
+.mdl-info>div:nth-child(2),.mdl-info>div:nth-child(3),.mdl-info .mdl-flag{grid-column:2}
+.mdl-qno{background:#a52a2a;color:#fff;padding:3px 10px;font-size:16px;grid-row:1/4;align-self:start}
+.mdl-qno b{font-size:21px}
+.mdl-flag{color:#a52a2a;text-decoration:none}
+.mdl-meta{grid-column:1/-1;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:12px;color:#777;margin-top:4px}
+.mdl-q{border:1px solid #dee2e6;background:#f8f9fa;padding:16px;border-radius:2px}
+.mdl-qtext{font-size:18px;line-height:1.5;margin-bottom:16px;white-space:pre-wrap}
+.mdl-tf{width:100%;border-collapse:collapse;background:#fff}
+.mdl-tf th{text-align:left;font-weight:700;padding:10px 6px;border-bottom:1px solid #dee2e6;width:64px}
+.mdl-tf th:last-child{width:auto}
+.mdl-tf td{padding:9px 6px;border-top:1px solid #e9ecef;vertical-align:top;cursor:pointer}
+.mdl-tf tbody tr:nth-child(odd){background:#f2f2f2}
+.mdl-tf td:nth-child(1),.mdl-tf td:nth-child(2){width:64px;text-align:left;padding-left:8px}
+.mdl-tf input[type=radio]{width:19px;height:19px;margin:2px 0 0;accent-color:#0f6cbf;cursor:pointer}
+.mdl-tf tr.ok td:last-child{background:#e6f4ea}
+.mdl-tf tr.bad td:last-child{background:#fbe9e7}
+.mdl-l{color:#888}
+.mdl-ic{font-weight:700;margin-left:8px}.mdl-ic.ok{color:#2e7d32}.mdl-ic.bad{color:#c62828}
+.mdl-should{font-family:-apple-system,sans-serif;font-size:12px;color:#c62828;margin-left:6px}
+.mdl-outcome{margin-top:14px;padding:12px 14px;background:#fcefdc;border-radius:3px;font-size:15px}
+.mdl-outcome.ok{background:#e6f4ea}.mdl-outcome.bad{background:#fbe9e7}
+.mdl-right{margin-top:6px;color:#555}
+.mdl .solution{background:#fff;border-color:#dee2e6;color:#373a3c}
+.mdl .next-info{color:#666}
+.mdl .solbtn{margin-top:12px;background:#6c757d}
+.mdl .cardans{background:#fff;border-left-color:#a52a2a;color:#373a3c;margin-top:4px}
+.mdl-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:16px 0}
+.mdl-hint{font-size:13px;color:#777;font-family:-apple-system,sans-serif}
+.mdl-btn{background:#a52a2a;color:#fff;border:0;border-radius:3px;padding:11px 20px;font-size:15px;letter-spacing:.03em;cursor:pointer;white-space:nowrap}
+.mdl-btn:disabled{opacity:.45;cursor:default}
+.mdl-nav{border:1px solid #dee2e6;background:#f4f4f4;padding:12px 14px;margin-top:22px}
+.mdl-navh{font-size:18px;font-weight:700;margin-bottom:10px;border-bottom:1px solid #ddd;padding-bottom:8px}
+.mdl-grid{display:flex;flex-wrap:wrap;gap:7px}
+.mdl-cell{width:36px;height:44px;border:1px solid #888;border-radius:3px;background:#fff;text-align:center;font-size:14px;padding-top:2px;position:relative;
+  background:linear-gradient(#fff 62%,#fff 62%)}
+.mdl-cell.done{background:linear-gradient(#fff 58%,#adb5bd 58%)}
+.mdl-cell.cur{border:2px solid #a52a2a}
+.mdl-cell.flag::after{content:"";position:absolute;top:0;right:0;border-style:solid;border-width:0 10px 10px 0;border-color:transparent #c62828 transparent transparent}
+.mdl-finish{display:block;margin-top:12px;color:#a52a2a;text-decoration:none;font-size:17px}
+.mdl-prog{font-family:-apple-system,sans-serif;font-size:13px;color:#666;margin:0 0 12px}
+.mdl-prog .bar{margin:0 0 5px;background:#e9ecef}
+body.mdl-on .infobox{background:#e7f1fb;color:#373a3c}
+body.mdl-on .infobox.passdone{border-color:#2e7d32}
 </style>
 </head>
 <body>
@@ -415,7 +476,7 @@ function bar(c) {
   return `<div class="bar"><i class="g" style="width:${100 * c.right / c.total}%"></i><i class="r" style="width:${100 * c.wrong / c.total}%"></i></div>`;
 }
 async function menu() {
-  S = null;
+  S = null; document.body.classList.remove('mdl-on');
   await loadProgress();
   if (S) return;
   const all = counts(allIds());
@@ -428,7 +489,7 @@ async function menu() {
   ${serverOK ? '' : `<div class="warnbox">Mac nicht erreichbar – deine Antworten werden hier zwischengespeichert${pending.length ? ` (${pending.length} offen)` : ''} und automatisch übertragen, sobald die Lernapp am Mac wieder läuft.</div>`}
   <div class="grid">
     <button class="card mode hero" onclick="startLearn(0)"><b>🌱 Schlau lernen – alle Kapitel</b><span>${all.due} fällig · ${all.fresh} offen. Wiederholung mit Abständen, Fragen nie zu oft hintereinander.</span></button>
-    <button class="card mode" onclick="startExam()"><b>Prüfung · ${examN()} Fragen</b><span>Zufällig aus allen Kapiteln. Auswertung erst am Ende.</span></button>
+    <button class="card mode" onclick="startExam()"><b>📝 Test wie am Prüfungstag</b><span>${EXAM_Q} Fragen · ${EXAM_MIN} Minuten · jede Aussage True/False · kein Zurück · bestanden ab ${EXAM_PASS} %. Auswertung erst am Ende.</span></button>
     <button class="card mode" onclick="startEndless()"><b>Endlos zufällig</b><span>Alle Fragen zufällig, ohne Ende.</span></button>
     <button class="card mode" onclick="startWrong(0)" ${all.fix ? '' : 'disabled'}><b>Alle Fehler wiederholen</b><span>${all.fix ? `${all.fix} Fragen, die du falsch hattest` : 'Aktuell keine falschen Fragen.'}</span></button>
     <button class="card mode" onclick="statsView()"><b>Meine Fehler &amp; Statistik</b><span>Welche Fragen du am häufigsten falsch machst.</span></button>
@@ -479,7 +540,7 @@ async function menu() {
 
 /* ---------- Sessions ---------- */
 function baseSession(mode, title, extra = {}) {
-  S = Object.assign({ mode, title, ids: [], i: 0, right: 0, done: 0, answers: [], feedback: true, endless: false, counted: {}, passLog: [] }, extra);
+  S = Object.assign({ mode, title, ids: [], i: 0, right: 0, done: 0, answers: [], feedback: true, endless: false, counted: {}, passLog: [], flags: {}, tf: {}, points: 0 }, extra);
 }
 function startChapter(c) {
   // macht dort weiter, wo du aufgehört hast: nur die im aktuellen Durchgang noch offenen Fragen
@@ -493,8 +554,12 @@ function startWrong(c) {
   baseSession('wrong', c ? `Falsche · Kapitel ${c}` : 'Alle Fehler', { chapter: c, ids: shuffle(ids) });
   showQ();
 }
+const EXAM_Q = 25, EXAM_MIN = 25, EXAM_PASS = 70;   // wie der Moodle-Test: 25 Fragen, 25 Minuten, bestanden ab 70 %
 function startExam() {
-  baseSession('exam', `Prüfung (${examN()} Fragen)`, { ids: shuffle(allIds()).slice(0, examN()), feedback: false });
+  const pool = DB.questions.filter(q => q.type !== 'card' && q.options && !(DB.chapters.find(c => c.id === q.chapter) || {}).practical).map(q => q.id);
+  const n = Math.min(EXAM_Q, pool.length);
+  baseSession('exam', `Test · ${n} questions · ${EXAM_MIN} min`, { ids: shuffle(pool).slice(0, n), feedback: false, deadline: Date.now() + EXAM_MIN * 60000, started: Date.now() });
+  clearInterval(TIMER); TIMER = setInterval(tick, 1000);
   showQ();
 }
 function startEndless() {
@@ -539,6 +604,7 @@ function nextRound() {
   S.ids = S.ids.slice(0, S.i).concat(round);
 }
 function learnEmpty() {
+  document.body.classList.remove('mdl-on');
   baseSession('none', '');
   $('#app').innerHTML = `<div class="top"><button class="ghost" onclick="menu()">← Menü</button></div>
     <div class="card"><div class="big">🎉</div><p><b>Alles erledigt!</b> In diesem Bereich gibt es gerade nichts mehr zu lernen.</p>
@@ -558,7 +624,7 @@ function showQ() {
   const pinned = idx.filter(i => /^(all|none) of the above/i.test(q.options[i]));
   S.order = shuffle(idx.filter(i => !pinned.includes(i))).concat(pinned);
   if (S.passMsg && S.passMsg.shown) S.passMsg = null;
-  S.sel = new Set();
+  S.sel = new Set(); S.tf = {};
   S.checked = false;
   S.revealed = false;   // Lernkarte aufgedeckt?
   S.showSol = false;    // „Show solution“ aufgeklappt?
@@ -566,78 +632,109 @@ function showQ() {
   render();
 }
 function render() {
+  document.body.classList.add('mdl-on');
   const q = BYID[S.ids[S.i]];
   const st = P.stats[q.id];
-  let pos;
-  let lc = null;   // Schlau lernen: Stand des ganzen Bereichs (erledigt = zuletzt richtig und gerade nicht fällig)
-  if (S.mode === 'learn') {
-    const c = counts(S.pool);
-    lc = { tot: c.total, right: c.right, wrong: c.wrong, open: c.fresh, pass: S.chapter ? chapPass(S.chapter) : 0 };
-    pos = `${c.total - c.fresh} / ${c.total} beantwortet`;
-  }
-  else pos = `Frage ${(S.offset || 0) + S.i + 1} / ${S.endless ? '∞' : (S.offset || 0) + S.ids.length}`;
-  let h = `<div class="top"><button class="ghost" onclick="quit()">← Menü</button>
-    <span class="pill">${esc(S.title)}</span>
-    <span class="pill">${pos}</span></div>`;
+  const isCard = q.type === 'card', exam = S.mode === 'exam';
+  const qn = (S.offset || 0) + S.i + 1;
+  let h = `<div class="mdl">
+  <div class="mdl-head"><div class="mdl-course">${esc(DECK.title)}</div><div class="mdl-crumb">Dashboard › ${esc(S.title)}</div></div>
+  <div class="mdl-toprow"><button class="mdl-back" onclick="quit()">BACK</button>${exam ? `<span class="mdl-timer"><span id="tleft" class="mdl-tbox${S.hideT ? ' hid' : ''}">Time left ${fmtLeft()}</span><button class="mdl-back" onclick="S.hideT=!S.hideT;render()">${S.hideT ? 'SHOW' : 'HIDE'}</button></span>` : ''}</div>`;
   if (S.passMsg) { S.passMsg.shown = true; h += S.passMsg.html; }
-  if (S.mode === 'learn' && S.extra) h += `<div class="infobox">✓ Alles Fällige und Neue ist erledigt. Du übst jetzt freiwillig die Fragen, die als Nächstes fällig würden.</div>`;
-  if (!S.endless) h += `<div class="progline"><i style="width:${100 * ((S.offset || 0) + S.i) / ((S.offset || 0) + S.ids.length)}%"></i></div>`;
-  else if (lc) h += `<div class="learnstat"><div class="bar"><i class="g" style="width:${100 * lc.right / Math.max(1, lc.tot)}%"></i><i class="r" style="width:${100 * lc.wrong / Math.max(1, lc.tot)}%"></i></div>
-    <div class="legend"><span>✓ ${lc.right} richtig</span><span style="color:var(--bad)">✗ ${lc.wrong} falsch</span><span>○ ${lc.open} offen</span><span>${lc.tot} Karten${lc.pass ? ` · Durchgang ${lc.pass}` : ''}</span></div></div>`;
+  if (S.mode === 'learn') {
+    const c = counts(S.pool), pass = S.chapter ? chapPass(S.chapter) : 0;
+    h += `<div class="mdl-prog"><div class="bar"><i class="g" style="width:${100 * c.right / Math.max(1, c.total)}%"></i><i class="r" style="width:${100 * c.wrong / Math.max(1, c.total)}%"></i></div>
+      <span><b>${c.total - c.fresh} / ${c.total}</b> beantwortet · ✓ ${c.right} richtig · ✗ ${c.wrong} falsch · ○ ${c.fresh} offen${pass ? ` · Durchgang ${pass}` : ''}</span></div>`;
+    if (S.extra) h += `<div class="infobox">✓ Alles Fällige und Neue ist erledigt. Du übst jetzt freiwillig die Fragen, die als Nächstes fällig würden.</div>`;
+  }
+  const n = isCard ? 0 : q.options.length;
+  const marked = isCard ? 0 : S.order.filter(oi => S.tf[oi] !== undefined).length;
+  const state = isCard ? (S.revealed ? 'Answer shown' : 'Not yet answered')
+    : S.checked ? `Mark ${S.lastPts.toFixed(2)} out of ${n}.00` : marked === n ? 'Answer saved' : 'Not yet answered';
   const badge = { new: '<span class="badge new">NEU</span>', rep: '<span class="badge rep">WIEDERHOLUNG</span>', again: '<span class="badge again">NOCHMAL</span>' }[S.kind] || '';
-  const isCard = q.type === 'card';
-  h += `<div class="card"><p class="q">${esc(q.q)}</p>${q.img ? `<img class="qimg" src="${imgURL(q.img)}" alt="Foto" onclick="this.classList.toggle('big')">` : ''}
-    <div class="meta">${badge}${S.extra && S.mode === 'learn' ? '<span class="badge rep">EXTRA</span>' : ''}${q.ai ? '<span class="badge ai">🤖 VON CLAUDE</span>' : ''}${isCard ? '<span class="badge card">LERNKARTE</span>' : ''}Kapitel ${q.chapter} · Nr. ${q.num}${isCard ? '' : ' · Mehrfachauswahl möglich'}${st && st.wrong && S.mode !== 'exam' ? ` · <span style="color:var(--bad)">schon ${st.wrong}× falsch</span>` : ''}</div>`;
+  const flagged = S.flags[q.id];
+  h += `<div class="mdl-info"><div class="mdl-qno">Question <b>${qn}</b></div>
+    <div>${state}</div><div>${isCard ? 'Flashcard' : `Points out of ${n}.00`}</div>
+    <a href="#" class="mdl-flag" onclick="S.flags[S.ids[S.i]]=!S.flags[S.ids[S.i]];render();return false">${flagged ? '⚑ Remove flag' : '⚐ Flag question'}</a>
+    ${exam ? '' : `<div class="mdl-meta">${badge}${S.extra && S.mode === 'learn' ? '<span class="badge rep">EXTRA</span>' : ''}${q.ai ? '<span class="badge ai">🤖 VON CLAUDE</span>' : ''}${isCard ? '<span class="badge card">LERNKARTE</span>' : ''}Kapitel ${q.chapter} · Nr. ${q.num}${st && st.wrong ? ` · <span style="color:#b3261e">schon ${st.wrong}× falsch</span>` : ''}</div>`}</div>`;
+  h += `<div class="mdl-q"><div class="mdl-qtext">${esc(q.q)}</div>${q.img ? `<img class="qimg" src="${imgURL(q.img)}" alt="Foto" onclick="this.classList.toggle('big')">` : ''}`;
   if (isCard) {
-    // Lernkarte: Frage → Antwort aufdecken → selbst bewerten
-    if (!S.revealed) {
-      h += `<div class="actions"><span class="hint">Erst selbst überlegen, dann aufdecken · Enter = Antwort zeigen</span>
-        <button class="btn" onclick="next()">Antwort zeigen</button></div></div>`;
-    } else {
-      h += `<div class="cardans${q.answer.includes('\n') ? ' long' : ''}">${esc(q.answer)}</div>${solutionBox(q, true)}
-        <div class="actions"><span class="hint">Tasten: 1 / ← = nicht gewusst · 2 / → = gewusst</span>
-        <span style="display:flex;gap:8px"><button class="ghost red" onclick="rate(false)">✗ Nicht gewusst</button>
-        <button class="btn" onclick="rate(true)">✓ Gewusst</button></span></div></div>`;
-    }
-    if (S.endless && S.done) h += `<p class="hint" style="margin-top:14px"><a href="#" onclick="finish();return false" style="color:var(--acc)">Sitzung beenden &amp; Auswertung anzeigen</a></p>`;
-    $('#app').innerHTML = h;
-    return;
-  }
-  S.order.forEach((oi, k) => {
-    let cls = 'opt', tag = '';
-    const sel = S.sel.has(oi), cor = q.correct[oi];
+    if (!S.revealed) h += `</div><div class="mdl-actions"><span class="mdl-hint">Erst selbst überlegen, dann aufdecken · Enter</span><button class="mdl-btn" onclick="next()">SHOW ANSWER</button></div>`;
+    else h += `<div class="cardans${q.answer.includes('\n') ? ' long' : ''}">${esc(q.answer)}</div>${solutionBox(q, true)}</div>
+      <div class="mdl-actions"><span class="mdl-hint">1 / ← nicht gewusst · 2 / → gewusst</span>
+      <span style="display:flex;gap:8px"><button class="mdl-back" onclick="rate(false)">✗ NICHT GEWUSST</button><button class="mdl-btn" onclick="rate(true)">✓ GEWUSST</button></span></div>`;
+  } else {
+    h += `<table class="mdl-tf"><thead><tr><th>True</th><th>False</th><th></th></tr></thead><tbody>`;
+    S.order.forEach((oi, k) => {
+      const v = S.tf[oi], cor = q.correct[oi];
+      let cls = '', icon = '';
+      if (S.checked) {
+        const ok = v === cor; cls = ok ? 'ok' : 'bad';
+        icon = ok ? '<span class="mdl-ic ok">✓</span>' : `<span class="mdl-ic bad">✗</span><span class="mdl-should">richtig: ${cor ? 'True' : 'False'}</span>`;
+      }
+      const dis = S.checked ? 'tabindex="-1" style="pointer-events:none"' : '';
+      h += `<tr class="${cls}" ${S.checked ? '' : `onclick="rowTap(event,${oi})"`}>
+        <td><input type="radio" name="tf${k}" ${v === true ? 'checked' : ''} ${dis} onclick="event.stopPropagation();setTF(${oi},true)" aria-label="True"></td>
+        <td><input type="radio" name="tf${k}" ${v === false ? 'checked' : ''} ${dis} onclick="event.stopPropagation();setTF(${oi},false)" aria-label="False"></td>
+        <td><span class="mdl-l">${LETTERS[k].toLowerCase()}.</span> ${esc(q.options[oi])}${icon}</td></tr>`;
+    });
+    h += `</tbody></table>`;
     if (S.checked) {
-      cls += ' locked';
-      if (sel && cor) { cls += ' ok'; tag = 'richtig'; }
-      else if (sel && !cor) { cls += ' bad'; tag = 'falsch'; }
-      else if (!sel && cor) { cls += ' miss'; tag = '<span style="color:var(--ok)">fehlt</span>'; }
-    } else if (sel) cls += ' sel';
-    h += `<button class="${cls}" onclick="tog(${oi})"><span class="k">${LETTERS[k]}</span><span>${esc(q.options[oi])}</span>${tag ? `<span class="tag">${tag}</span>` : ''}</button>`;
-  });
-  if (S.checked) {
-    const sol = S.order.map((oi, k) => q.correct[oi] ? LETTERS[k] : '').filter(Boolean).join(', ');
-    h += `<div class="verdict ${S.lastRight ? 'ok' : 'bad'}">${S.lastRight ? '✓ Komplett richtig' : '✗ Nicht ganz – richtig wäre: ' + (sol || 'keine Antwort (alle falsch)')}</div>`;
-    if (S.mode === 'learn') {
-      const s = P.stats[q.id];
-      h += `<div class="next-info">${S.lastRight ? `Kommt wieder: ${fmtDays(dueOf(s) - Date.now())}` :
-        (S.kind === 'again' ? 'Kommt in der nächsten Sitzung wieder.' : 'Kommt in der nächsten Runde noch einmal – mit anderen Fragen dazwischen.')}</div>`;
+      const kind = S.lastRight ? 'ok' : S.lastPts > 0 ? 'part' : 'bad';
+      h += `<div class="mdl-outcome ${kind}"><b>${S.lastRight ? 'Correct' : S.lastPts > 0 ? 'Partially correct' : 'Incorrect'}</b> · Mark ${S.lastPts.toFixed(2)} out of ${n}.00
+        <div class="mdl-right">The correct answer is: ${S.order.map((oi, k) => `${LETTERS[k].toLowerCase()}. ${q.correct[oi] ? 'True' : 'False'}`).join(', ')}</div></div>`;
+      if (S.mode === 'learn') {
+        const s = P.stats[q.id];
+        h += `<div class="next-info">${S.lastRight ? `Kommt wieder: ${fmtDays(dueOf(s) - Date.now())}` :
+          (S.kind === 'again' ? 'Kommt in der nächsten Sitzung wieder.' : 'Kommt in der nächsten Runde noch einmal – mit anderen Fragen dazwischen.')}</div>`;
+      }
+      if (hasSolution(q)) h += S.showSol ? solutionBox(q, false, S.order) :
+        `<button class="mdl-back solbtn" onclick="S.showSol=true;render()">💡 Show solution (S)</button>`;
     }
-    if (hasSolution(q)) {
-      h += S.showSol ? solutionBox(q, false, S.order) :
-        `<button class="ghost solbtn ${S.lastRight ? '' : 'red'}" onclick="S.showSol=true;render()">💡 Show solution <span class="hint">(S)</span></button>`;
-    }
+    h += `</div>`;
+    const last = !S.endless && S.i === S.ids.length - 1;
+    const label = S.feedback && !S.checked ? 'CHECK' : (last ? 'FINISH ATTEMPT' : 'NEXT PAGE');
+    const ready = S.checked || marked === n;
+    h += `<div class="mdl-actions"><span class="mdl-hint">${ready ? 'Tasten 1–' + n + ' = Zeile umschalten · Enter = weiter' : `<span style="color:#b3261e">Jede Aussage als True oder False markieren (${marked}/${n})</span>`}</span>
+      <button class="mdl-btn" onclick="next()" ${ready ? '' : 'disabled'}>${label}</button></div>`;
   }
-  const last = !S.endless && S.i === S.ids.length - 1;
-  const label = S.feedback && !S.checked ? 'Prüfen' : (last ? 'Auswerten' : 'Weiter');
-  h += `<div class="actions"><span class="hint">Tasten: 1–${q.options.length} / A–${LETTERS[q.options.length - 1]} · Enter = ${label}</span>
-    <button class="btn" onclick="next()">${label} →</button></div></div>`;
-  if (S.endless && S.done) h += `<p class="hint" style="margin-top:14px"><a href="#" onclick="finish();return false" style="color:var(--acc)">Sitzung beenden &amp; Auswertung anzeigen</a></p>`;
+  // Quiz navigation
+  if (!S.endless) {
+    const off = S.offset || 0, tot = off + S.ids.length;
+    h += `<div class="mdl-nav"><div class="mdl-navh">📌 Quiz navigation</div><div class="mdl-grid">`;
+    for (let i = 0; i < tot; i++) {
+      const id = i >= off ? S.ids[i - off] : null, cur = i === off + S.i, done = i < off + S.i || (cur && (S.checked || (S.revealed && false)));
+      h += `<span class="mdl-cell${cur ? ' cur' : ''}${done ? ' done' : ''}${id && S.flags[id] ? ' flag' : ''}">${i + 1}</span>`;
+    }
+    h += `</div><a href="#" class="mdl-finish" onclick="finishAttempt();return false">Finish attempt ...</a></div>`;
+  } else if (S.done) h += `<div class="mdl-nav"><a href="#" class="mdl-finish" onclick="finish();return false">Finish attempt ... (Sitzung beenden &amp; Auswertung)</a></div>`;
+  h += `</div>`;
   $('#app').innerHTML = h;
 }
-function tog(oi) {
+function setTF(oi, v) {
   if (S.checked) return;
-  S.sel.has(oi) ? S.sel.delete(oi) : S.sel.add(oi);
+  S.tf[oi] = v;
+  S.sel = new Set(Object.keys(S.tf).filter(k => S.tf[k] === true).map(Number));
   render();
+}
+function rowTap(e, oi) {   // Tippen auf den Text: True → False → True …
+  if (e.target.tagName === 'INPUT') return;
+  setTF(oi, S.tf[oi] === true ? false : true);
+}
+function finishAttempt() {
+  if (S.mode === 'exam') { if (!confirm('Submit all and finish? Unbeantwortete Fragen zählen 0 Punkte.')) return; return finish(); }
+  if (S.done) return finish();
+  quit();
+}
+function fmtLeft() {
+  const r = Math.max(0, S.deadline - Date.now()), s = Math.floor(r / 1000);
+  return `${Math.floor(s / 3600)}:${String(Math.floor(s / 60) % 60).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+}
+let TIMER = null;
+function tick() {
+  if (!S || S.mode !== 'exam') { clearInterval(TIMER); TIMER = null; return; }
+  if (Date.now() >= S.deadline) { clearInterval(TIMER); TIMER = null; S.timeUp = true; return finish(); }
+  const el = document.getElementById('tleft'); if (el) el.textContent = 'Time left ' + fmtLeft();
 }
 /* ---------- Lösung / Erklärung ---------- */
 const hasSolution = q => !!(q.explanation || q.note || q.source || q.ai);
@@ -674,7 +771,9 @@ function rate(right) {
 function evaluate(forced) {
   const q = BYID[S.ids[S.i]];
   const right = forced ?? q.correct.every((c, oi) => c === S.sel.has(oi));
-  if (!S.counted[q.id]) { S.counted[q.id] = 1; S.done++; if (right) S.right++; }   // pro Sitzung zählt nur der erste Versuch
+  const pts = q.options && q.type !== 'card' ? q.correct.filter((c, oi) => c === S.sel.has(oi)).length : (right ? 1 : 0);
+  S.lastPts = pts;
+  if (!S.counted[q.id]) { S.counted[q.id] = 1; S.done++; if (right) S.right++; S.points += pts; }   // pro Sitzung zählt nur der erste Versuch
   S.answers.push({ id: q.id, sel: [...S.sel], order: S.order, right });
   const before = chapPass(q.chapter);
   record(q.id, right);
@@ -692,7 +791,9 @@ function evaluate(forced) {
   return right;
 }
 function next() {
-  if (BYID[S.ids[S.i]].type === 'card') { if (!S.revealed) { S.revealed = true; render(); } return; }
+  const q = BYID[S.ids[S.i]];
+  if (q.type === 'card') { if (!S.revealed) { S.revealed = true; render(); } return; }
+  if (!S.checked && q.options.some((_, oi) => S.tf[oi] === undefined)) return render();   // erst alle Aussagen markieren
   if (S.feedback && !S.checked) { S.lastRight = evaluate(); S.checked = true; render(); return; }
   if (!S.feedback) evaluate();
   if (!S.endless && S.i >= S.ids.length - 1) return finish();
@@ -704,6 +805,7 @@ function quit() {
   menu();
 }
 function finish(allDone) {
+  document.body.classList.remove('mdl-on');
   const entry = { t: Date.now(), deck: DECK.id, mode: S.mode, title: S.title, right: S.right, total: S.done };
   if (S.done) {
     P.history.push(entry);
@@ -717,9 +819,13 @@ function finish(allDone) {
   const scopeName = S.chapter ? `Kapitel ${S.chapter}` : (S.mode === 'exam' ? 'diese Prüfung' : 'alle Fragen');
   let main, sub;
   if (S.mode === 'exam') {
-    const pct = Math.round(100 * S.right / S.ids.length);
-    main = `${S.right} / ${S.ids.length}`;
-    sub = `${pct}% der Prüfungsfragen richtig${S.done < S.ids.length ? ` (abgebrochen nach ${S.done} Fragen – unbeantwortete zählen als falsch)` : ''}`;
+    clearInterval(TIMER); TIMER = null;
+    const max = S.ids.reduce((a, id) => a + BYID[id].options.length, 0), pct = Math.round(100 * S.points / max);
+    const used = Math.min(Date.now(), S.deadline) - S.started;
+    main = `${pct}% · ${pct >= EXAM_PASS ? '✓ bestanden' : '✗ nicht bestanden'}`;
+    sub = `${S.points} von ${max} Aussagen richtig markiert (bestanden ab ${EXAM_PASS} %) · ${S.right} von ${S.ids.length} Fragen komplett richtig · Zeit ${Math.floor(used / 60000)}:${String(Math.floor(used / 1000) % 60).padStart(2, '0')} min` +
+      `${S.timeUp ? ' · ⏰ Zeit abgelaufen' : ''}${S.done < S.ids.length ? ` · ${S.ids.length - S.done} Fragen nicht beantwortet (0 Punkte)` : ''}` +
+      `<br><span class="hint">Gewertet wie in Moodle („Points out of 4.00“): 1 Punkt pro richtig markierter Aussage.</span>`;
   } else {
     main = `${c.right} / ${c.total}`;
     main = `${c.right} richtig · ${c.wrong} falsch`;
@@ -729,7 +835,7 @@ function finish(allDone) {
     ${(S.passLog || []).map(m => `<div class="infobox passdone">${m}</div>`).join('')}
     <div class="card">${allDone ? '<p><b>🎉 Für heute ist hier alles erledigt.</b></p>' : ''}
     <div class="pill">${S.mode === 'exam' ? 'Ergebnis' : 'Fortschritt'}</div>
-    <div class="big" style="color:var(--ok)">${main}</div><div>${sub}</div>
+    <div class="big" style="color:${S.mode === 'exam' && main.includes('nicht') ? 'var(--bad)' : 'var(--ok)'}">${main}</div><div>${sub}</div>
     ${S.mode !== 'exam' ? bar(c) : ''}
     <div class="actions" style="justify-content:flex-start;flex-wrap:wrap">
       ${S.mode === 'learn' ? `<button class="btn" onclick="startLearn(${S.chapter || 0})">Weiterlernen</button>` : `<button class="btn" onclick="again()">Nochmal</button>`}
@@ -754,7 +860,12 @@ function finish(allDone) {
 function answerList(q, a) {
   if (q.type === 'card') return `<ul><li class="c">${esc(q.answer)}</li></ul>`;
   const order = a ? a.order : q.options.map((_, i) => i);
-  return `<ul>` + order.map((oi, k) => `<li class="${q.correct[oi] ? 'c' : ''}">${a ? LETTERS[k] + ') ' : ''}${esc(q.options[oi])}${a && a.sel.includes(oi) ? ' <em style="color:var(--mute);font-weight:400">(deine Wahl)</em>' : ''}</li>`).join('') + `</ul>`;
+  return `<ul>` + order.map((oi, k) => {
+    const tf = q.correct[oi] ? 'True' : 'False';
+    if (!a) return `<li class="${q.correct[oi] ? 'c' : ''}">${esc(q.options[oi])} <em style="font-weight:400;color:var(--mute)">(${tf})</em></li>`;
+    const mine = a.sel.includes(oi), ok = mine === q.correct[oi];
+    return `<li class="${q.correct[oi] ? 'c' : ''}">${LETTERS[k]}) ${esc(q.options[oi])} <em style="font-weight:400;color:${ok ? 'var(--ok)' : 'var(--bad)'}">— ${tf}${ok ? ' ✓' : ` · du: ${mine ? 'True' : 'False'} ✗`}</em></li>`;
+  }).join('') + `</ul>`;
 }
 function again() {
   const a = window._last;
@@ -772,7 +883,7 @@ function retryWrong() {
 /* ---------- Statistik ---------- */
 let statFilter = 0;
 async function statsView(refresh = true) {
-  S = null;
+  S = null; document.body.classList.remove('mdl-on');
   if (refresh) await loadProgress();
   const ent = Object.entries(P.stats).filter(([id, s]) => BYID[id] && s.seen);
   const seen = ent.reduce((a, [, s]) => a + s.seen, 0), wrongN = ent.reduce((a, [, s]) => a + s.wrong, 0);
@@ -833,10 +944,10 @@ document.addEventListener('keydown', e => {
     else if (k === '2' || e.key === 'ArrowRight') { e.preventDefault(); rate(true); }
     return;
   }
-  if (!$('.opt')) return;
+  if (!$('.mdl-tf')) return;
   const n = q.options.length;
   let idx = '123456'.slice(0, n).indexOf(k); if (idx < 0) idx = 'abcdef'.slice(0, n).indexOf(k);
-  if (idx >= 0 && k.length === 1) { e.preventDefault(); tog(S.order[idx]); }
+  if (idx >= 0 && k.length === 1) { e.preventDefault(); if (!S.checked) setTF(S.order[idx], S.tf[S.order[idx]] === true ? false : true); }
   else if (k === 's' && S.checked && hasSolution(q)) { e.preventDefault(); S.showSol = !S.showSol; render(); }
   else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); next(); }
 });
