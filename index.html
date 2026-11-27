@@ -162,14 +162,10 @@ body.mdl-on .wrap{max-width:900px;padding-top:max(10px,env(safe-area-inset-top))
 .mdl-tf tbody tr:nth-child(odd){background:#f2f2f2}
 .mdl-tf td:nth-child(1),.mdl-tf td:nth-child(2){width:64px;text-align:left;padding-left:8px}
 .mdl-tf input[type=radio]{width:19px;height:19px;margin:2px 0 0;accent-color:#0f6cbf;cursor:pointer}
-.mdl-tf tr.ok td:last-child{background:#e6f4ea}
-.mdl-tf tr.bad td:last-child{background:#fbe9e7}
+.mdl-tf tbody tr.ok,.mdl-tf tbody tr.ok:nth-child(odd){background:#dff1e3}
+.mdl-tf tbody tr.bad,.mdl-tf tbody tr.bad:nth-child(odd){background:#f9dcd8}
+.mdl-tf tr.ok td:last-child{color:#1b5e20}.mdl-tf tr.bad td:last-child{color:#a31515}
 .mdl-l{color:#888}
-.mdl-ic{font-weight:700;margin-left:8px}.mdl-ic.ok{color:#2e7d32}.mdl-ic.bad{color:#c62828}
-.mdl-should{font-family:-apple-system,sans-serif;font-size:12px;color:#c62828;margin-left:6px}
-.mdl-outcome{margin-top:14px;padding:12px 14px;background:#fcefdc;border-radius:3px;font-size:15px}
-.mdl-outcome.ok{background:#e6f4ea}.mdl-outcome.bad{background:#fbe9e7}
-.mdl-right{margin-top:6px;color:#555}
 .mdl .solution{background:#fff;border-color:#dee2e6;color:#373a3c}
 .mdl .next-info{color:#666}
 .mdl .solbtn{margin-top:12px;background:#6c757d}
@@ -669,8 +665,7 @@ function render() {
       const v = S.tf[oi], cor = q.correct[oi];
       let cls = '', icon = '';
       if (S.checked) {
-        const ok = v === cor; cls = ok ? 'ok' : 'bad';
-        icon = ok ? '<span class="mdl-ic ok">✓</span>' : `<span class="mdl-ic bad">✗</span><span class="mdl-should">richtig: ${cor ? 'True' : 'False'}</span>`;
+        cls = v === cor ? 'ok' : 'bad';   // nur Farbe: grün = richtig markiert, rot = falsch markiert
       }
       const dis = S.checked ? 'tabindex="-1" style="pointer-events:none"' : '';
       h += `<tr class="${cls}" ${S.checked ? '' : `onclick="rowTap(event,${oi})"`}>
@@ -680,9 +675,6 @@ function render() {
     });
     h += `</tbody></table>`;
     if (S.checked) {
-      const kind = S.lastRight ? 'ok' : S.lastPts > 0 ? 'part' : 'bad';
-      h += `<div class="mdl-outcome ${kind}"><b>${S.lastRight ? 'Correct' : S.lastPts > 0 ? 'Partially correct' : 'Incorrect'}</b> · Mark ${S.lastPts.toFixed(2)} out of ${n}.00
-        <div class="mdl-right">The correct answer is: ${S.order.map((oi, k) => `${LETTERS[k].toLowerCase()}. ${q.correct[oi] ? 'True' : 'False'}`).join(', ')}</div></div>`;
       if (S.mode === 'learn') {
         const s = P.stats[q.id];
         h += `<div class="next-info">${S.lastRight ? `Kommt wieder: ${fmtDays(dueOf(s) - Date.now())}` :
